@@ -1,4 +1,4 @@
-package com.example.library
+package com.niloda.cot
 
 import arrow.core.Either
 import arrow.core.raise.either

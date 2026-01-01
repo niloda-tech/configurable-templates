@@ -6,7 +6,7 @@ plugins {
     kotlin("jvm") version "2.2.21"
 }
 
-group = "com.example"
+group = "com.niloda"
 version = "1.0-SNAPSHOT"
 
 repositories {
