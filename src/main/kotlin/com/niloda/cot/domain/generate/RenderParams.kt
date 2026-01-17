@@ -10,6 +10,7 @@ class RenderParams private constructor(private val values: Map<String, Any?>) {
 
     companion object {
         fun of(entries: Map<String, Any?>): RenderParams = RenderParams(entries.toMap())
+        fun of(vararg entries: Pair<String, Any?>): RenderParams = RenderParams(entries.toMap())
         fun empty(): RenderParams = RenderParams(emptyMap())
     }
 }

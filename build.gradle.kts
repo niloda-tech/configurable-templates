@@ -1,6 +1,7 @@
 
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "2.2.21"
@@ -43,5 +44,8 @@ java {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        // Enable context receivers/parameters for all Kotlin compile tasks (main and test)
+        freeCompilerArgs.add("-Xcontext-parameters")
     }
 }
+// Removed per-task flag set for only compileKotlin in favor of applying to all KotlinCompile tasks above.
