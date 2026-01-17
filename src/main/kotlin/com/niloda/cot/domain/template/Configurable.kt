@@ -22,6 +22,16 @@ sealed interface Configurable {
     ) : Configurable
 
     /**
+     * A configurable rule for including a [Section] based on the presence of a parameter.
+     * @param parameterName The name of the [Parameter] presence that controls inclusion.
+     * @param section The [Section] to be conditionally included.
+     */
+    data class IfPresent(
+        val parameterName: String,
+        val section: Section
+    ) : Configurable
+
+    /**
      * A configurable rule for repeating a [Section] multiple times.
      * The repetition can be controlled by a number parameter (for count) or a list parameter (for iteration).
      * @param parameterName The name of the [Parameter] controlling the repetition.
