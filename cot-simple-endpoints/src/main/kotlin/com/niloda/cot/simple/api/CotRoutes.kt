@@ -1,8 +1,6 @@
 package com.niloda.cot.simple.api
 
-import arrow.core.raise.either
 import com.niloda.cot.domain.dsl.cot
-import com.niloda.cot.domain.template.DomainError
 import com.niloda.cot.simple.api.models.*
 import com.niloda.cot.simple.repository.CotRepository
 import com.niloda.cot.simple.repository.StoredCot
@@ -11,7 +9,6 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import java.time.format.DateTimeFormatter
 
 /**
  * Configure COT CRUD routes
