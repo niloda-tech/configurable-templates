@@ -1,5 +1,7 @@
 package com.niloda.cot.simple
 
+import com.niloda.cot.simple.api.cotRoutes
+import com.niloda.cot.simple.repository.InMemoryCotRepository
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -15,6 +17,9 @@ fun main() {
 }
 
 fun Application.module() {
+    // Initialize repository
+    val repository = InMemoryCotRepository()
+    
     install(ContentNegotiation) {
         json()
     }
@@ -27,6 +32,9 @@ fun Application.module() {
         get("/") {
             call.respond(mapOf("name" to "cot-simple-endpoints", "message" to "Welcome"))
         }
+        
+        // COT CRUD routes
+        cotRoutes(repository)
     }
 }
 

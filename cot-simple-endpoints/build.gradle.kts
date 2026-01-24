@@ -2,6 +2,7 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
 
 plugins {
     kotlin("jvm") version "2.2.21"
+    kotlin("plugin.serialization") version "2.2.21"
     application
 }
 
@@ -13,15 +14,24 @@ repositories {
 }
 
 val ktorVersion = "3.0.1"
+val arrowVersion = "2.2.0"
 
 dependencies {
     implementation(kotlin("stdlib"))
+    
+    // cot-dsl module dependency
+    implementation(project(":cot-dsl"))
 
     // Ktor server
     implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktorVersion")
+    
+    // Arrow for typed error handling
+    implementation(platform("io.arrow-kt:arrow-stack:$arrowVersion"))
+    implementation("io.arrow-kt:arrow-core")
+    implementation("io.arrow-kt:arrow-fx-coroutines")
 
     // Logging (SLF4J Simple for quick run)
     runtimeOnly("org.slf4j:slf4j-simple:2.0.13")
