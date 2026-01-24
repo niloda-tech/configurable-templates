@@ -22,6 +22,6 @@ To run the tests, run:
 
 This project includes guidance for Large Language Models (LLMs) on how to contribute to the codebase. See the following files for more information:
 
--   [`CODING_STYLE.md`](./CODING_STYLE.md)
--   [`EXCEPTION_HANDLING.md`](./EXCEPTION_HANDLING.md)
--   [`CONTRIBUTING.md`](./CONTRIBUTING.md)
+-   [`CODING_STYLE.md`](.ai/CODING_STYLE.md)
+-   [`EXCEPTION_HANDLING.md`](.ai/EXCEPTION_HANDLING.md)
+-   [`CONTRIBUTING.md`](.ai/CONTRIBUTING.md)
