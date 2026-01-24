@@ -1,0 +1,56 @@
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+
+plugins {
+    kotlin("jvm") version "2.2.21"
+    application
+}
+
+group = "com.niloda"
+version = "1.0-SNAPSHOT"
+
+repositories {
+    mavenCentral()
+}
+
+val ktorVersion = "3.0.1"
+
+dependencies {
+    implementation(kotlin("stdlib"))
+
+    // Ktor server
+    implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktorVersion")
+
+    // Logging (SLF4J Simple for quick run)
+    runtimeOnly("org.slf4j:slf4j-simple:2.0.13")
+
+    // Tests
+    testImplementation(kotlin("test"))
+    testImplementation("io.ktor:ktor-server-test-host-jvm:$ktorVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
+application {
+    // Ktor 3 uses main with EngineMain or custom main; we use custom main
+    mainClass.set("com.niloda.cot.simple.ApplicationKt")
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
+}
