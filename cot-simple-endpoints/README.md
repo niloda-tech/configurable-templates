@@ -82,7 +82,9 @@ Run all tests:
 
 ## API Documentation
 
-### Endpoints
+See [API_DOCUMENTATION.md](API_DOCUMENTATION.md) for complete API reference with examples.
+
+### Quick Reference
 
 #### Health Check
 ```
@@ -99,7 +101,7 @@ Response: { "cots": [...] }
 #### Get COT
 ```
 GET /api/cots/{id}
-Response: { "id": "...", "name": "...", ... }
+Response: { "id": "...", "name": "...", "dslCode": "...", ... }
 ```
 
 #### Create COT
@@ -122,7 +124,7 @@ DELETE /api/cots/{id}
 Response: 204 No Content
 ```
 
-#### Generate Output
+#### Generate Output (Coming in Phase 2)
 ```
 POST /api/cots/{id}/generate
 Body: { "parameters": { "key": "value", ... } }
@@ -263,18 +265,23 @@ See [LICENSE](../LICENSE) file in the root directory.
 
 ## Status
 
-🚧 **Under Development** - This is a planned feature. See [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) for the roadmap.
+✅ **Phase 1 Complete** - Backend Foundation implemented and tested
 
 Current implementation status:
 - [x] Basic Ktor server setup
-- [x] Health check endpoint
-- [ ] COT repository
-- [ ] CRUD API endpoints
-- [ ] Generation endpoint
-- [ ] Kobweb frontend
-- [ ] COT editor UI
-- [ ] Parameter form UI
-- [ ] Tests and documentation
+- [x] Health check endpoint  
+- [x] COT repository (InMemoryCotRepository with ConcurrentHashMap)
+- [x] CRUD API endpoints (all 5 endpoints working)
+- [x] Error handling with Arrow's Either
+- [x] API documentation
+- [x] Manual testing completed
+- [ ] Generation endpoint (Phase 2)
+- [ ] Kobweb frontend (Phase 3+)
+- [ ] COT editor UI (Phase 5)
+- [ ] Parameter form UI (Phase 6)
+- [ ] Automated tests (Phase 7)
+
+See [API_DOCUMENTATION.md](API_DOCUMENTATION.md) for complete API reference.
 
 ## Quick Examples
 
