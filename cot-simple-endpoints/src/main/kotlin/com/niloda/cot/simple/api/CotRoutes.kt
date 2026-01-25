@@ -2,6 +2,8 @@ package com.niloda.cot.simple.api
 
 import arrow.core.Option.Companion.fromNullable
 import com.niloda.cot.domain.dsl.cot
+import com.niloda.cot.domain.generate.generate
+import com.niloda.cot.domain.generate.renderConfigurable
 import com.niloda.cot.simple.api.models.*
 import com.niloda.cot.simple.repository.CotRepository
 import com.niloda.cot.simple.repository.StoredCot
@@ -111,6 +113,36 @@ fun Route.cotRoutes(repository: CotRepository) {
                             .fold(
                                 { error -> notFound("CotNotFound", error.toString()) },
                                 { noContent() }
+                            )
+                    }
+                )
+        }
+
+        // Generate output from COT
+        post("/{id}/generate") {
+            fromNullable(call.parameters["id"])
+                .fold(
+                    { badRequest("InvalidRequest", "Missing id parameter") },
+                    { id ->
+                        val request = call.receive<GenerateRequest>()
+
+                        repository
+                            .findById(id)
+                            .fold(
+                                { error -> notFound("CotNotFound", error.toString()) },
+                                { stored ->
+                                    convertToRenderParams(request.parameters)
+                                        .fold(
+                                            { error -> badRequest("InvalidParameters", error.toString()) },
+                                            { params ->
+                                                generate(stored.cot, params, ::renderConfigurable)
+                                                    .fold(
+                                                        { error -> badRequest("GenerationError", error.toString()) },
+                                                        { output -> ok(GenerateResponse(output)) }
+                                                    )
+                                            }
+                                        )
+                                }
                             )
                     }
                 )
