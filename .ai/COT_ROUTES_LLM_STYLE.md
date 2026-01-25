@@ -27,6 +27,12 @@ Use these directives when generating or modifying code in `cot-simple-endpoints`
 - Map persistence models via private extensions: `StoredCot.toSummary()` and `StoredCot.toDetailResponse()`; keep definitions near the routes file.
 - Use `createdAt`/`updatedAt` string formatting consistent with existing conversions (`toString()`).
 
+## Testing
+- Split test files by functionality rather than keeping all tests in a single file
+- Name test files with the prefix `CotRoutesTest` followed by the specific area being tested (e.g., `CotRoutesTestCreate`, `CotRoutesTestGet`, `CotRoutesTestGenerate`)
+- Group related test cases into separate test classes to improve maintainability and readability
+- Each test file should focus on a specific endpoint or workflow (e.g., list operations, get operations, create operations, update operations, delete operations, generate operations, complete workflows)
+
 ## Formatting
 - Kotlin, 4-space indent, no trailing commas. Blank lines separate handler blocks and helper sections.
 - Use explicit imports for status codes rather than wildcarding; keep import list tight.
