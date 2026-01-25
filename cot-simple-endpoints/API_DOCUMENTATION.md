@@ -1,0 +1,270 @@
+# COT Simple Endpoints API Documentation
+
+## Overview
+
+This document describes the REST API endpoints for managing Configurable Templates (COTs).
+
+Base URL: `http://localhost:8080`
+
+## Authentication
+
+Currently, no authentication is required (Phase 1 MVP).
+
+## Endpoints
+
+### Health Check
+
+Check if the server is running.
+
+**Endpoint:** `GET /health`
+
+**Response:**
+```json
+{
+  "status": "ok"
+}
+```
+
+**Status Codes:**
+- `200 OK` - Server is running
+
+---
+
+### List All COTs
+
+Retrieve a list of all stored COTs.
+
+**Endpoint:** `GET /api/cots`
+
+**Response:**
+```json
+{
+  "cots": [
+    {
+      "id": "6090568f-a69b-4361-8667-ca5d489ac9c6",
+      "name": "TestTemplate",
+      "createdAt": "2026-01-24T18:47:08.423715314Z",
+      "updatedAt": "2026-01-24T18:47:08.423715314Z"
+    }
+  ]
+}
+```
+
+**Status Codes:**
+- `200 OK` - Success
+
+---
+
+### Get Single COT
+
+Retrieve details of a specific COT by ID.
+
+**Endpoint:** `GET /api/cots/{id}`
+
+**Parameters:**
+- `id` (path) - UUID of the COT
+
+**Response:**
+```json
+{
+  "id": "6090568f-a69b-4361-8667-ca5d489ac9c6",
+  "name": "TestTemplate",
+  "dslCode": "cot(\"TestTemplate\") { \"Hello World\".text }",
+  "createdAt": "2026-01-24T18:47:08.423715314Z",
+  "updatedAt": "2026-01-24T18:47:08.423715314Z"
+}
+```
+
+**Status Codes:**
+- `200 OK` - Success
+- `404 Not Found` - COT with specified ID does not exist
+
+**Error Response:**
+```json
+{
+  "error": "CotNotFound",
+  "message": "MissingRequired(what=COT with id 'nonexistent-id' not found)"
+}
+```
+
+---
+
+### Create COT
+
+Create a new COT.
+
+**Endpoint:** `POST /api/cots`
+
+**Request Body:**
+```json
+{
+  "name": "TestTemplate",
+  "dslCode": "cot(\"TestTemplate\") { \"Hello World\".text }"
+}
+```
+
+**Response:**
+```json
+{
+  "id": "6090568f-a69b-4361-8667-ca5d489ac9c6",
+  "name": "TestTemplate",
+  "dslCode": "cot(\"TestTemplate\") { \"Hello World\".text }",
+  "createdAt": "2026-01-24T18:47:08.423715314Z",
+  "updatedAt": "2026-01-24T18:47:08.423715314Z"
+}
+```
+
+**Status Codes:**
+- `201 Created` - COT successfully created
+- `400 Bad Request` - Invalid request (e.g., empty name, invalid DSL)
+
+**Error Response:**
+```json
+{
+  "error": "InvalidDsl",
+  "message": "InvalidName(where=cot constructor, reason=templater name cannot be empty)"
+}
+```
+
+---
+
+### Update COT
+
+Update an existing COT.
+
+**Endpoint:** `PUT /api/cots/{id}`
+
+**Parameters:**
+- `id` (path) - UUID of the COT to update
+
+**Request Body:**
+```json
+{
+  "name": "UpdatedTemplate",
+  "dslCode": "cot(\"UpdatedTemplate\") { \"Updated Hello World\".text }"
+}
+```
+
+**Response:**
+```json
+{
+  "id": "6090568f-a69b-4361-8667-ca5d489ac9c6",
+  "name": "UpdatedTemplate",
+  "dslCode": "cot(\"UpdatedTemplate\") { \"Updated Hello World\".text }",
+  "createdAt": "2026-01-24T18:47:08.423715314Z",
+  "updatedAt": "2026-01-24T18:47:08.465022771Z"
+}
+```
+
+**Status Codes:**
+- `200 OK` - COT successfully updated
+- `400 Bad Request` - Invalid request (e.g., empty name, invalid DSL)
+- `404 Not Found` - COT with specified ID does not exist
+
+**Error Response (Not Found):**
+```json
+{
+  "error": "CotNotFound",
+  "message": "MissingRequired(what=COT with id 'nonexistent-id' not found)"
+}
+```
+
+---
+
+### Delete COT
+
+Delete an existing COT.
+
+**Endpoint:** `DELETE /api/cots/{id}`
+
+**Parameters:**
+- `id` (path) - UUID of the COT to delete
+
+**Response:**
+No content
+
+**Status Codes:**
+- `204 No Content` - COT successfully deleted
+- `404 Not Found` - COT with specified ID does not exist
+
+**Error Response:**
+```json
+{
+  "error": "CotNotFound",
+  "message": "MissingRequired(what=COT with id 'nonexistent-id' not found)"
+}
+```
+
+---
+
+## Error Handling
+
+All endpoints use typed error handling with Arrow's Either. Errors are returned in the following format:
+
+```json
+{
+  "error": "ErrorType",
+  "message": "Detailed error message"
+}
+```
+
+### Common Error Types
+
+- `InvalidRequest` - Missing or malformed request parameters
+- `InvalidDsl` - Invalid COT DSL code
+- `CotNotFound` - Requested COT does not exist
+- `InternalError` - Unexpected server error
+
+---
+
+## Examples
+
+### Create a COT
+
+```bash
+curl -X POST http://localhost:8080/api/cots \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "MyTemplate",
+    "dslCode": "cot(\"MyTemplate\") { \"Hello World\".text }"
+  }'
+```
+
+### List all COTs
+
+```bash
+curl http://localhost:8080/api/cots
+```
+
+### Get a specific COT
+
+```bash
+curl http://localhost:8080/api/cots/6090568f-a69b-4361-8667-ca5d489ac9c6
+```
+
+### Update a COT
+
+```bash
+curl -X PUT http://localhost:8080/api/cots/6090568f-a69b-4361-8667-ca5d489ac9c6 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "UpdatedTemplate",
+    "dslCode": "cot(\"UpdatedTemplate\") { \"New content\".text }"
+  }'
+```
+
+### Delete a COT
+
+```bash
+curl -X DELETE http://localhost:8080/api/cots/6090568f-a69b-4361-8667-ca5d489ac9c6
+```
+
+---
+
+## Notes
+
+- All timestamps are in ISO-8601 format (UTC)
+- IDs are UUIDs generated by the server
+- The repository is in-memory and data will be lost on server restart
+- The server uses ConcurrentHashMap for thread-safe concurrent access
+- DSL code is stored as-is for display purposes (full DSL evaluation will be implemented in future phases)
