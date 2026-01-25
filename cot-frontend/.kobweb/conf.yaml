@@ -1,6 +1,2 @@
-site:
-  title: "COT Editor"
-  description: "Configurable Templates Editor"
-
 server:
   port: 8081
