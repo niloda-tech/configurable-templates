@@ -13,7 +13,7 @@ import org.jetbrains.compose.web.css.*
 @Page
 @Composable
 fun HomePage() {
-    PageLayout("Welcome to Configurable Templates") {
+    PageLayout("Welcome to COT Editor") {
         Column(modifier = Modifier.gap(1.em)) {
             SpanText("A powerful template management system with DSL-based configuration.")
             

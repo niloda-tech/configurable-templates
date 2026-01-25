@@ -12,26 +12,30 @@ import org.jetbrains.compose.web.css.*
 @Page
 @Composable
 fun AboutPage() {
-    PageLayout("About") {
+    PageLayout("About COT Editor") {
         Column(modifier = Modifier.gap(1.em)) {
-            SpanText("Configurable Templates is a template management system built with:")
+            SpanText("COT Editor is a template management system built with:")
             
             Column(modifier = Modifier.gap(0.5.em).padding(left = 1.em)) {
-                SpanText("• Kotlin 2.2.21")
+                SpanText("• Kotlin 2.2.20")
                 SpanText("• Ktor 3.0.1 (Backend)")
                 SpanText("• Kobweb 0.23.3 (Frontend)")
                 SpanText("• Arrow for functional error handling")
             }
             
             SpanText(
-                "Backend API is running on port 8080",
-                modifier = Modifier.margin(top = 1.em)
+                "Architecture:",
+                modifier = Modifier
+                    .fontSize(1.5.em)
+                    .fontWeight(600)
+                    .margin(top = 1.em, bottom = 0.5.em)
             )
             
-            SpanText(
-                "Frontend is running on port 8081",
-                modifier = Modifier
-            )
+            Column(modifier = Modifier.gap(0.5.em).padding(left = 1.em)) {
+                SpanText("• Backend: Ktor server on port 8080 (separate module)")
+                SpanText("• Frontend: Kobweb on port 8081 (separate module)")
+                SpanText("• Modular architecture to avoid dependency conflicts")
+            }
         }
     }
 }

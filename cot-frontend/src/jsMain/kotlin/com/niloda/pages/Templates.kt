@@ -1,8 +1,8 @@
 package com.niloda.pages
 
 import androidx.compose.runtime.*
-import com.niloda.cot.frontend.api.ApiClient
-import com.niloda.cot.frontend.api.CotSummary
+import com.niloda.api.ApiClient
+import com.niloda.api.CotSummary
 import com.niloda.components.PageLayout
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -10,7 +10,6 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.silk.components.text.SpanText
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 
 @Page
