@@ -31,7 +31,14 @@ private fun convertJsonElement(key: String, element: JsonElement): Any {
                 element.isString -> element.content
                 element.booleanOrNull != null -> element.boolean
                 element.intOrNull != null -> element.int
-                element.longOrNull != null -> element.long.toInt()
+                element.longOrNull != null -> {
+                    val longValue = element.long
+                    // Validate that long fits in int range
+                    if (longValue > Int.MAX_VALUE || longValue < Int.MIN_VALUE) {
+                        throw IllegalArgumentException("Parameter '$key' value $longValue is outside int range")
+                    }
+                    longValue.toInt()
+                }
                 element.doubleOrNull != null -> element.double
                 else -> element.content
             }

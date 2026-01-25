@@ -197,6 +197,76 @@ No content
 
 ---
 
+### Generate Output from COT
+
+Generate rendered output from a COT using provided parameters.
+
+**Endpoint:** `POST /api/cots/{id}/generate`
+
+**Parameters:**
+- `id` (path) - UUID of the COT to generate from
+
+**Request Body:**
+```json
+{
+  "parameters": {
+    "enabled": true,
+    "count": 5,
+    "name": "John"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "output": "Generated template content..."
+}
+```
+
+**Status Codes:**
+- `200 OK` - Generation successful
+- `400 Bad Request` - Invalid parameters, missing required parameter, or type mismatch
+- `404 Not Found` - COT with specified ID does not exist
+
+**Error Response (Missing Parameter):**
+```json
+{
+  "error": "GenerationError",
+  "message": "MissingParameter(name=enabled)"
+}
+```
+
+**Error Response (Type Mismatch):**
+```json
+{
+  "error": "GenerationError",
+  "message": "TypeMismatch(name=enabled, expected=Boolean, actual=String)"
+}
+```
+
+**Error Response (Not Found):**
+```json
+{
+  "error": "CotNotFound",
+  "message": "MissingRequired(what=COT with id 'nonexistent-id' not found)"
+}
+```
+
+**Supported Parameter Types:**
+- `boolean` - For conditional rendering
+- `number` (integer/double) - For repetition count and numeric values
+- `string` - For choice selection and dynamic content
+
+**Notes:**
+- All parameters are provided as a JSON object map
+- Parameters are validated against the COT schema
+- Missing required parameters will result in a 400 error
+- Type mismatches will result in a 400 error with detailed information
+- Parameters not used by the COT are ignored
+
+---
+
 ## Error Handling
 
 All endpoints use typed error handling with Arrow's Either. Errors are returned in the following format:
@@ -212,6 +282,8 @@ All endpoints use typed error handling with Arrow's Either. Errors are returned 
 
 - `InvalidRequest` - Missing or malformed request parameters
 - `InvalidDsl` - Invalid COT DSL code
+- `InvalidParameters` - Invalid parameter structure or unsupported parameter type
+- `GenerationError` - Error during COT generation (missing parameter, type mismatch, etc.)
 - `CotNotFound` - Requested COT does not exist
 - `InternalError` - Unexpected server error
 
@@ -257,6 +329,20 @@ curl -X PUT http://localhost:8080/api/cots/6090568f-a69b-4361-8667-ca5d489ac9c6 
 
 ```bash
 curl -X DELETE http://localhost:8080/api/cots/6090568f-a69b-4361-8667-ca5d489ac9c6
+```
+
+### Generate Output from COT
+
+```bash
+curl -X POST http://localhost:8080/api/cots/6090568f-a69b-4361-8667-ca5d489ac9c6/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "parameters": {
+      "enabled": true,
+      "count": 3,
+      "name": "Alice"
+    }
+  }'
 ```
 
 ---
