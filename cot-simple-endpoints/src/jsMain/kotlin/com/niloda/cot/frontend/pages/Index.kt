@@ -26,15 +26,16 @@ fun HomePage() {
             )
             
             Column(modifier = Modifier.gap(0.5.em).padding(left = 1.em)) {
-                SpanText("• Create and manage templates with parameters")
-                SpanText("• Type-safe parameter validation")
-                SpanText("• Generate content from templates")
+                SpanText("• Create and manage COT (Configurable Output Templates)")
+                SpanText("• Type-safe parameter validation via DSL")
+                SpanText("• Generate output from templates with parameters")
                 SpanText("• RESTful API for integration")
+                SpanText("• Web-based frontend for easy management")
             }
             
             Link(
                 "/templates",
-                "View Templates",
+                "View COTs",
                 modifier = Modifier
                     .margin(top = 2.em)
                     .fontSize(1.2.em)

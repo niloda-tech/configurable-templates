@@ -2,7 +2,7 @@ package com.niloda.cot.frontend.pages
 
 import androidx.compose.runtime.*
 import com.niloda.cot.frontend.api.ApiClient
-import com.niloda.cot.frontend.api.TemplateResponse
+import com.niloda.cot.frontend.api.CotSummary
 import com.niloda.cot.frontend.components.PageLayout
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -16,15 +16,15 @@ import org.jetbrains.compose.web.css.*
 @Page
 @Composable
 fun TemplatesPage() {
-    var templates by remember { mutableStateOf<List<TemplateResponse>>(emptyList()) }
+    var cots by remember { mutableStateOf<List<CotSummary>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     
     LaunchedEffect(Unit) {
         loading = true
-        ApiClient.listTemplates()
-            .onSuccess { 
-                templates = it
+        ApiClient.listCots()
+            .onSuccess { response ->
+                cots = response.cots
                 loading = false
             }
             .onFailure { 
@@ -33,10 +33,10 @@ fun TemplatesPage() {
             }
     }
     
-    PageLayout("Templates") {
+    PageLayout("COT Templates") {
         when {
             loading -> {
-                SpanText("Loading templates...")
+                SpanText("Loading COTs...")
             }
             error != null -> {
                 SpanText(
@@ -44,13 +44,13 @@ fun TemplatesPage() {
                     modifier = Modifier.color(rgb(220, 38, 38))
                 )
             }
-            templates.isEmpty() -> {
-                SpanText("No templates found. Create your first template using the API!")
+            cots.isEmpty() -> {
+                SpanText("No COTs found. Create your first COT using the API!")
             }
             else -> {
                 Column(modifier = Modifier.gap(1.em)) {
-                    templates.forEach { template ->
-                        TemplateCard(template)
+                    cots.forEach { cot ->
+                        CotCard(cot)
                     }
                 }
             }
@@ -59,7 +59,7 @@ fun TemplatesPage() {
 }
 
 @Composable
-private fun TemplateCard(template: TemplateResponse) {
+private fun CotCard(cot: CotSummary) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -69,44 +69,29 @@ private fun TemplateCard(template: TemplateResponse) {
             .gap(0.5.em)
     ) {
         SpanText(
-            template.name,
+            cot.name,
             modifier = Modifier
                 .fontSize(1.3.em)
                 .fontWeight(FontWeight.Bold)
         )
         
-        template.description?.let { desc ->
-            SpanText(desc, modifier = Modifier.color(rgb(107, 114, 128)))
+        Row(modifier = Modifier.gap(1.em)) {
+            SpanText(
+                "Created: ${cot.createdAt}",
+                modifier = Modifier.color(rgb(107, 114, 128)).fontSize(0.9.em)
+            )
+            SpanText(
+                "Updated: ${cot.updatedAt}",
+                modifier = Modifier.color(rgb(107, 114, 128)).fontSize(0.9.em)
+            )
         }
         
-        if (template.parameters.isNotEmpty()) {
-            SpanText(
-                "Parameters:",
-                modifier = Modifier
-                    .fontSize(0.9.em)
-                    .fontWeight(FontWeight.SemiBold)
-                    .margin(top = 0.5.em)
-            )
-            Column(modifier = Modifier.gap(0.25.em).padding(left = 1.em)) {
-                template.parameters.forEach { param ->
-                    Row(modifier = Modifier.gap(0.5.em)) {
-                        SpanText(
-                            param.name,
-                            modifier = Modifier.fontWeight(FontWeight.Medium)
-                        )
-                        SpanText(
-                            "(${param.type})",
-                            modifier = Modifier.color(rgb(107, 114, 128))
-                        )
-                        if (param.required) {
-                            SpanText(
-                                "*",
-                                modifier = Modifier.color(rgb(220, 38, 38))
-                            )
-                        }
-                    }
-                }
-            }
-        }
+        SpanText(
+            "ID: ${cot.id}",
+            modifier = Modifier
+                .color(rgb(107, 114, 128))
+                .fontSize(0.85.em)
+                .fontFamily("monospace")
+        )
     }
 }

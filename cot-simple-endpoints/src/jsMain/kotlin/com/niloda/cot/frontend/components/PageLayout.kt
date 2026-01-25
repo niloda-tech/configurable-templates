@@ -33,7 +33,7 @@ fun PageLayout(title: String, content: @Composable () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Link("/", "Home")
-                Link("/templates", "Templates")
+                Link("/templates", "COTs")
                 Link("/about", "About")
             }
         }

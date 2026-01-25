@@ -9,7 +9,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 
 object ApiClient {
-    private val baseUrl = "http://localhost:8080/api/cot"
+    private val baseUrl = "http://localhost:8080/api/cots"
     
     private val client = HttpClient {
         install(ContentNegotiation) {
@@ -21,22 +21,22 @@ object ApiClient {
         }
     }
     
-    suspend fun listTemplates(): Result<List<TemplateResponse>> = try {
-        val response = client.get("$baseUrl/templates")
+    suspend fun listCots(): Result<CotListResponse> = try {
+        val response = client.get(baseUrl)
         Result.success(response.body())
     } catch (e: Exception) {
         Result.failure(e)
     }
     
-    suspend fun getTemplate(id: String): Result<TemplateResponse> = try {
-        val response = client.get("$baseUrl/templates/$id")
+    suspend fun getCot(id: String): Result<CotDetailResponse> = try {
+        val response = client.get("$baseUrl/$id")
         Result.success(response.body())
     } catch (e: Exception) {
         Result.failure(e)
     }
     
-    suspend fun createTemplate(request: CreateTemplateRequest): Result<TemplateResponse> = try {
-        val response = client.post("$baseUrl/templates") {
+    suspend fun createCot(request: CreateCotRequest): Result<CotDetailResponse> = try {
+        val response = client.post(baseUrl) {
             contentType(ContentType.Application.Json)
             setBody(request)
         }
@@ -45,9 +45,29 @@ object ApiClient {
         Result.failure(e)
     }
     
-    suspend fun deleteTemplate(id: String): Result<Unit> = try {
-        client.delete("$baseUrl/templates/$id")
+    suspend fun updateCot(id: String, request: UpdateCotRequest): Result<CotDetailResponse> = try {
+        val response = client.put("$baseUrl/$id") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+        Result.success(response.body())
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+    
+    suspend fun deleteCot(id: String): Result<Unit> = try {
+        client.delete("$baseUrl/$id")
         Result.success(Unit)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+    
+    suspend fun generateOutput(id: String, request: GenerateRequest): Result<GenerateResponse> = try {
+        val response = client.post("$baseUrl/$id/generate") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+        Result.success(response.body())
     } catch (e: Exception) {
         Result.failure(e)
     }

@@ -1,44 +1,54 @@
 package com.niloda.cot.frontend.api
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
-data class TemplateResponse(
+data class CotSummary(
     val id: String,
     val name: String,
-    val description: String?,
-    val parameters: List<ParameterResponse>
+    val createdAt: String,
+    val updatedAt: String
 )
 
 @Serializable
-data class ParameterResponse(
+data class CotDetailResponse(
+    val id: String,
     val name: String,
-    val type: String,
-    val description: String?,
-    val required: Boolean,
-    val defaultValue: String?
+    val dslCode: String,
+    val createdAt: String,
+    val updatedAt: String
 )
 
 @Serializable
-data class CreateTemplateRequest(
+data class CotListResponse(
+    val cots: List<CotSummary>
+)
+
+@Serializable
+data class CreateCotRequest(
     val name: String,
-    val description: String?,
-    val templateString: String
+    val dslCode: String
 )
 
 @Serializable
-data class UpdateTemplateRequest(
-    val name: String?,
-    val description: String?,
-    val templateString: String?
+data class UpdateCotRequest(
+    val name: String,
+    val dslCode: String
 )
 
 @Serializable
 data class GenerateRequest(
-    val parameters: Map<String, String>
+    val parameters: Map<String, JsonElement>
 )
 
 @Serializable
 data class GenerateResponse(
-    val result: String
+    val output: String
+)
+
+@Serializable
+data class ErrorResponse(
+    val error: String,
+    val message: String
 )
