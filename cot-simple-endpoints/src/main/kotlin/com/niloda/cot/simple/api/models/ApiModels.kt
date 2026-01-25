@@ -1,6 +1,7 @@
 package com.niloda.cot.simple.api.models
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 /**
  * Request to create a new COT
@@ -49,6 +50,22 @@ data class CotDetailResponse(
 @Serializable
 data class CotListResponse(
     val cots: List<CotSummary>
+)
+
+/**
+ * Request to generate output from a COT
+ */
+@Serializable
+data class GenerateRequest(
+    val parameters: Map<String, JsonElement>
+)
+
+/**
+ * Response from generating output
+ */
+@Serializable
+data class GenerateResponse(
+    val output: String
 )
 
 /**
