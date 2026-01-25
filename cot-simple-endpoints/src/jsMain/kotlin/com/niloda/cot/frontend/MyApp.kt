@@ -2,7 +2,6 @@ package com.niloda.cot.frontend
 
 import androidx.compose.runtime.*
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.core.App
 import com.varabyte.kobweb.silk.SilkApp
 import com.varabyte.kobweb.silk.components.layout.Surface
 import com.varabyte.kobweb.silk.init.InitSilk
@@ -18,7 +17,6 @@ fun initSilk(ctx: InitSilkContext) {
     // Configure Silk theme here if needed
 }
 
-@App
 @Composable
 fun MyApp(content: @Composable () -> Unit) {
     SilkApp {

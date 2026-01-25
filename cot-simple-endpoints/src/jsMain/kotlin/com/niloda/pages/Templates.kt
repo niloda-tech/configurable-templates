@@ -1,9 +1,9 @@
-package com.niloda.cot.frontend.pages
+package com.niloda.pages
 
 import androidx.compose.runtime.*
 import com.niloda.cot.frontend.api.ApiClient
 import com.niloda.cot.frontend.api.CotSummary
-import com.niloda.cot.frontend.components.PageLayout
+import com.niloda.components.PageLayout
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -72,7 +72,7 @@ private fun CotCard(cot: CotSummary) {
             cot.name,
             modifier = Modifier
                 .fontSize(1.3.em)
-                .fontWeight(FontWeight.Bold)
+                .fontWeight(600)
         )
         
         Row(modifier = Modifier.gap(1.em)) {

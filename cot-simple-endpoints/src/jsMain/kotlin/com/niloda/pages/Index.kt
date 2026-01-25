@@ -1,7 +1,7 @@
-package com.niloda.cot.frontend.pages
+package com.niloda.pages
 
 import androidx.compose.runtime.*
-import com.niloda.cot.frontend.components.PageLayout
+import com.niloda.components.PageLayout
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
@@ -21,7 +21,7 @@ fun HomePage() {
                 "Features:",
                 modifier = Modifier
                     .fontSize(1.5.em)
-                    .fontWeight(FontWeight.Bold)
+                    .fontWeight(600)
                     .margin(top = 1.em, bottom = 0.5.em)
             )
             

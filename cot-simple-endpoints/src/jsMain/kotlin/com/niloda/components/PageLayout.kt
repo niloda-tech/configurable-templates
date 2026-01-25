@@ -1,4 +1,4 @@
-package com.niloda.cot.frontend.components
+package com.niloda.components
 
 import androidx.compose.runtime.*
 import com.varabyte.kobweb.compose.css.*
@@ -25,8 +25,8 @@ fun PageLayout(title: String, content: @Composable () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(1.em)
-                .backgroundColor(colorMode.toPalette().background)
-                .borderBottom(1.px, LineStyle.Solid, colorMode.toPalette().color)
+                .backgroundColor(rgb(248, 250, 252))
+                .borderBottom(1.px, LineStyle.Solid, rgb(226, 232, 240))
         ) {
             Row(
                 modifier = Modifier.gap(2.em),
@@ -48,7 +48,7 @@ fun PageLayout(title: String, content: @Composable () -> Unit) {
                 title,
                 modifier = Modifier
                     .fontSize(2.em)
-                    .fontWeight(FontWeight.Bold)
+                    .fontWeight(700)
                     .margin(bottom = 1.em)
             )
             content()
