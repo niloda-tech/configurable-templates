@@ -1,11 +1,15 @@
 package com.niloda.cot.simple.api
 
+import arrow.core.Option.Companion.fromNullable
 import com.niloda.cot.domain.dsl.cot
 import com.niloda.cot.simple.api.models.*
 import com.niloda.cot.simple.repository.CotRepository
 import com.niloda.cot.simple.repository.StoredCot
 import io.ktor.http.*
-import io.ktor.server.application.*
+import io.ktor.http.HttpStatusCode.Companion.BadRequest
+import io.ktor.http.HttpStatusCode.Companion.InternalServerError
+import io.ktor.http.HttpStatusCode.Companion.NotFound
+import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -17,46 +21,34 @@ fun Route.cotRoutes(repository: CotRepository) {
     route("/api/cots") {
         // List all COTs
         get {
-            repository.list().fold(
-                ifLeft = { error ->
-                    call.respond(
-                        HttpStatusCode.InternalServerError,
-                        ErrorResponse("InternalError", error.toString())
-                    )
-                },
-                ifRight = { cots ->
-                    call.respond(
-                        HttpStatusCode.OK,
-                        CotListResponse(cots.map { it.toSummary() })
-                    )
-                }
-            )
+            repository
+                .list()
+                .fold(
+                    { error -> internalServerError("InternalError", error.toString()) },
+                    { cots -> ok(CotListResponse(cots.map { it.toSummary() })) }
+                )
         }
-        
+
         // Get single COT
         get("/{id}") {
-            val id = call.parameters["id"] ?: return@get call.respond(
-                HttpStatusCode.BadRequest,
-                ErrorResponse("InvalidRequest", "Missing id parameter")
-            )
-            
-            repository.findById(id).fold(
-                ifLeft = { error ->
-                    call.respond(
-                        HttpStatusCode.NotFound,
-                        ErrorResponse("CotNotFound", error.toString())
-                    )
-                },
-                ifRight = { cot ->
-                    call.respond(HttpStatusCode.OK, cot.toDetailResponse())
-                }
-            )
+            fromNullable(call.parameters["id"])
+                .fold(
+                    { badRequest("InvalidRequest", "id required") },
+                    { id ->
+                        repository
+                            .findById(id)
+                            .fold(
+                                { error -> notFound("CotNotFound", error.toString()) },
+                                { cot -> ok(cot.toDetailResponse()) }
+                            )
+                    }
+                )
         }
-        
+
         // Create COT
         post {
             val request = call.receive<CreateCotRequest>()
-            
+
             // Create a simple COT using the DSL
             // For Phase 1, we create a basic static template
             // Future phases will implement full DSL code parsing/evaluation
@@ -64,90 +56,92 @@ fun Route.cotRoutes(repository: CotRepository) {
                 "Template: ${request.name}\n".text
                 "DSL Code:\n${request.dslCode}\n".text
             }
-            
+
             cotResult.fold(
-                ifLeft = { error ->
-                    call.respond(
-                        HttpStatusCode.BadRequest,
-                        ErrorResponse("InvalidDsl", error.toString())
-                    )
-                },
-                ifRight = { cot ->
-                    repository.create(cot, request.dslCode).fold(
-                        ifLeft = { error ->
-                            call.respond(
-                                HttpStatusCode.InternalServerError,
-                                ErrorResponse("CreateError", error.toString())
-                            )
-                        },
-                        ifRight = { stored ->
-                            call.respond(HttpStatusCode.Created, stored.toDetailResponse())
-                        }
-                    )
+                { error -> badRequest("InvalidDsl", error.toString()) },
+                { cot ->
+                    repository
+                        .create(cot, request.dslCode)
+                        .fold(
+                            { error -> internalServerError("CreateError", error.toString()) },
+                            { stored -> created(stored) }
+                        )
                 }
             )
         }
-        
+
         // Update COT
         put("/{id}") {
-            val id = call.parameters["id"] ?: return@put call.respond(
-                HttpStatusCode.BadRequest,
-                ErrorResponse("InvalidRequest", "Missing id parameter")
-            )
-            val request = call.receive<UpdateCotRequest>()
-            
-            // Create a simple COT using the DSL
-            // For Phase 1, we create a basic static template
-            // Future phases will implement full DSL code parsing/evaluation
-            val cotResult = cot(request.name) {
-                "Template: ${request.name}\n".text
-                "DSL Code:\n${request.dslCode}\n".text
-            }
-            
-            cotResult.fold(
-                ifLeft = { error ->
-                    call.respond(
-                        HttpStatusCode.BadRequest,
-                        ErrorResponse("InvalidDsl", error.toString())
-                    )
-                },
-                ifRight = { cot ->
-                    repository.update(id, cot, request.dslCode).fold(
-                        ifLeft = { error ->
-                            call.respond(
-                                HttpStatusCode.NotFound,
-                                ErrorResponse("CotNotFound", error.toString())
-                            )
-                        },
-                        ifRight = { stored ->
-                            call.respond(HttpStatusCode.OK, stored.toDetailResponse())
-                        }
-                    )
-                }
-            )
+            fromNullable(call.parameters["id"])
+                .fold(
+                    { badRequest("InvalidRequest", "Missing id parameter") },
+                    { id ->
+
+                        val request = call.receive<UpdateCotRequest>()
+
+                        // Create a simple COT using the DSL
+                        // For Phase 1, we create a basic static template
+                        // Future phases will implement full DSL code parsing/evaluation
+                        cot(request.name) {
+                            "Template: ${request.name}\n".text
+                            "DSL Code:\n${request.dslCode}\n".text
+                        }.fold(
+                            { error -> badRequest("InvalidDsl", error.toString()) },
+                            { cot ->
+                                repository
+                                    .update(id, cot, request.dslCode)
+                                    .fold(
+                                        { error -> notFound("CotNotFound", error.toString()) },
+                                        { stored -> ok(stored.toDetailResponse()) }
+                                    )
+                            }
+                        )
+                    }
+                )
         }
-        
+
         // Delete COT
         delete("/{id}") {
-            val id = call.parameters["id"] ?: return@delete call.respond(
-                HttpStatusCode.BadRequest,
-                ErrorResponse("InvalidRequest", "Missing id parameter")
-            )
-            
-            repository.delete(id).fold(
-                ifLeft = { error ->
-                    call.respond(
-                        HttpStatusCode.NotFound,
-                        ErrorResponse("CotNotFound", error.toString())
-                    )
-                },
-                ifRight = {
-                    call.respond(HttpStatusCode.NoContent)
-                }
-            )
+            fromNullable(call.parameters["id"])
+                .fold(
+                    { badRequest("InvalidRequest", "Missing id parameter") },
+                    { id ->
+                        repository
+                            .delete(id)
+                            .fold(
+                                { error -> notFound("CotNotFound", error.toString()) },
+                                { noContent() }
+                            )
+                    }
+                )
         }
     }
 }
+
+private suspend fun RoutingContext.created(stored: StoredCot) {
+    call.respond(HttpStatusCode.Created, stored.toDetailResponse())
+}
+
+private suspend fun RoutingContext.badRequest(error: String, message: String) {
+    call.respond(BadRequest, ErrorResponse(error, message))
+}
+
+private suspend fun RoutingContext.internalServerError(error: String, message: String) {
+    call.respond(InternalServerError, ErrorResponse(error, message))
+}
+
+private suspend fun RoutingContext.notFound(error: String, message: String) {
+    call.respond(NotFound, ErrorResponse(error, message))
+}
+
+private suspend inline fun <reified T : Any> RoutingContext.ok(t: T) {
+    call.respond(OK, t)
+}
+
+private suspend fun RoutingContext.noContent() {
+    call.respond(HttpStatusCode.NoContent)
+}
+
 
 /**
  * Convert StoredCot to CotSummary
