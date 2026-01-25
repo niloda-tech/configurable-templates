@@ -10,12 +10,13 @@ This is a **separate module** from the backend to avoid dependency conflicts. Th
 ```
 cot-frontend/               # Frontend module (Kobweb, JS only)
 ├── build.gradle.kts        # Frontend dependencies (Kobweb, Compose HTML, Ktor Client)
-├── .kobweb/conf.yaml       # Kobweb configuration
+├── .kobweb/
+│   └── conf.yaml           # Kobweb configuration
 └── src/jsMain/kotlin/
     └── com/niloda/
-        ├── MyApp.kt        # Main app entry point
+        ├── AppEntry.kt     # Main app entry point with @App annotation
         ├── api/            # API client for backend communication
-        ├── pages/          # Kobweb pages
+        ├── pages/          # Kobweb pages (@Page annotations)
         └── components/     # Reusable UI components
 
 cot-simple-endpoints/       # Backend module (Ktor, JVM only)
@@ -38,8 +39,8 @@ Separate modules provide:
 ## Technology Stack
 
 - **Kotlin**: 2.2.20 (JS target only)
-- **Kobweb**: 0.23.3 (application plugin)
-- **Compose HTML**: 1.7.3
+- **Kobweb**: 0.23.3 (application plugin with `configAsKobwebApplication`)
+- **Compose HTML**: 1.8.0
 - **Ktor Client**: 3.0.1 (for API calls)
 - **kotlinx.serialization**: 1.7.3
 
@@ -74,7 +75,7 @@ brew install varabyte/tap/kobweb  # macOS
 ```
 Backend runs on http://localhost:8080
 
-**Start Frontend** (in cot-frontend directory):
+**Start Frontend**:
 ```bash
 cd cot-frontend
 kobweb run
@@ -97,6 +98,17 @@ kobweb export
 ## Project Structure
 
 ```kotlin
+// AppEntry.kt - Main app entry point
+@App
+@Composable
+fun AppEntry(content: @Composable () -> Unit) {
+    SilkApp {
+        Surface(SmoothColorStyle.toModifier().minHeight(100.vh)) {
+            content()
+        }
+    }
+}
+
 // Pages follow Kobweb convention
 package com.niloda.pages
 
@@ -107,6 +119,39 @@ fun HomePage() { ... }
 @Page  // Routes to /templates
 @Composable
 fun TemplatesPage() { ... }
+```
+
+## Key Configuration
+
+### build.gradle.kts
+Uses `kobweb.application` plugin (not `library`) and `configAsKobwebApplication`:
+
+```kotlin
+import com.varabyte.kobweb.gradle.application.util.configAsKobwebApplication
+
+plugins {
+    kotlin("multiplatform") version "2.2.20"
+    id("com.varabyte.kobweb.application") version "0.23.3"
+}
+
+kotlin {
+    configAsKobwebApplication("cot-frontend")
+}
+```
+
+### .kobweb/conf.yaml
+Specifies server configuration and file paths:
+
+```yaml
+site:
+  title: "COT Editor"
+  
+server:
+  files:
+    dev:
+      contentRoot: "build/processedResources/js/main/public"
+      script: "build/kotlin-webpack/js/developmentExecutable/cot-frontend.js"
+  port: 8081
 ```
 
 ## API Client
@@ -138,6 +183,15 @@ object ApiClient {
 3. Changes are isolated from backend
 4. No dependency conflicts!
 
+## Changes from Previous Version
+
+This version uses the **proper Kobweb application structure**:
+- ✅ Uses `kobweb.application` plugin (not `library`)
+- ✅ Uses `configAsKobwebApplication` helper
+- ✅ Has proper `@App` annotation in AppEntry.kt
+- ✅ Updated .kobweb/conf.yaml with correct file paths
+- ✅ Uses Compose 1.8.0 (matching Kobweb requirements)
+
 ## Next Steps
 
 - [ ] Add Create COT page with form
@@ -148,8 +202,8 @@ object ApiClient {
 
 ## Troubleshooting
 
-**Q: Kobweb plugin errors?**  
-A: Make sure you're using `kobweb.application` plugin (not `library`) since this is a standalone frontend.
+**Q: Build errors with Kobweb plugin?**  
+A: Make sure you're using `kobweb.application` plugin and `configAsKobwebApplication`. The `kobweb.library` plugin doesn't work for standalone applications.
 
 **Q: Can't reach backend?**  
 A: Ensure backend is running on port 8080 and CORS is enabled.
