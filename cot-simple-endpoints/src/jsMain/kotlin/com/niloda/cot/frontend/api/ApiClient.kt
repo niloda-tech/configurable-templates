@@ -6,10 +6,22 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.browser.window
 import kotlinx.serialization.json.Json
 
 object ApiClient {
-    private val baseUrl = "http://localhost:8080/api/cots"
+    // Use current origin in production, localhost:8080 in development
+    private val apiBaseUrl = run {
+        val origin = window.location.origin
+        // If running on dev server (port 8081), use backend on 8080
+        if (origin.contains(":8081")) {
+            "http://localhost:8080"
+        } else {
+            origin
+        }
+    }
+    
+    private val baseUrl = "$apiBaseUrl/api/cots"
     
     private val client = HttpClient {
         install(ContentNegotiation) {
