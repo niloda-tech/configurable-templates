@@ -243,12 +243,14 @@ fun GeneratePage() {
                                 Button(
                                     attrs = {
                                         onClick {
-                                            copyToClipboard(generatedOutput!!)
-                                            copySuccess = true
-                                            // Reset copy success after 2 seconds
-                                            scope.launch {
-                                                kotlinx.coroutines.delay(2000)
-                                                copySuccess = false
+                                            generatedOutput?.let { output ->
+                                                copyToClipboard(output)
+                                                copySuccess = true
+                                                // Reset copy success after 2 seconds
+                                                scope.launch {
+                                                    kotlinx.coroutines.delay(2000)
+                                                    copySuccess = false
+                                                }
                                             }
                                         }
                                         style {
@@ -294,19 +296,21 @@ fun GeneratePage() {
                                         }
                                     }
                                 ) {
-                                    SpanText(
-                                        generatedOutput!!,
-                                        modifier = Modifier
-                                            .fontFamily("monospace")
-                                            .fontSize(0.9.em)
-                                            .color(rgb(229, 231, 235))
-                                            .attrsModifier {
-                                                style {
-                                                    property("white-space", "pre-wrap")
-                                                    property("word-break", "break-word")
+                                    generatedOutput?.let { output ->
+                                        SpanText(
+                                            output,
+                                            modifier = Modifier
+                                                .fontFamily("monospace")
+                                                .fontSize(0.9.em)
+                                                .color(rgb(229, 231, 235))
+                                                .attrsModifier {
+                                                    style {
+                                                        property("white-space", "pre-wrap")
+                                                        property("word-break", "break-word")
+                                                    }
                                                 }
-                                            }
-                                    )
+                                        )
+                                    }
                                 }
                             }
                         }
