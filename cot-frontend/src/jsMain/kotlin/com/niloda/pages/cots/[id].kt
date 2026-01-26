@@ -305,7 +305,7 @@ private fun MetadataRow(label: String, value: String) {
             value,
             modifier = Modifier
                 .color(rgb(107, 114, 128))
-                .fontFamily(if (label == "ID") "monospace" else "")
+                .let { if (label == "ID") it.fontFamily("monospace") else it }
         )
     }
 }
