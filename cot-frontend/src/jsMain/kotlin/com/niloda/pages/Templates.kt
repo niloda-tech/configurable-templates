@@ -13,11 +13,15 @@ import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.compose.ui.attrsModifier
 import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Text
+import com.varabyte.kobweb.core.rememberPageContext
 
 @Page
 @Composable
 fun TemplatesPage() {
+    val ctx = rememberPageContext()
     var cots by remember { mutableStateOf<List<CotSummary>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
@@ -36,23 +40,52 @@ fun TemplatesPage() {
     }
     
     PageLayout("COT Templates") {
-        when {
-            loading -> {
-                SpanText("Loading COTs...")
+        Column(modifier = Modifier.gap(1.5.em)) {
+            // Create button
+            Button(
+                attrs = {
+                    onClick { ctx.router.navigateTo("/cots/create") }
+                    style {
+                        property("padding", "0.75em 1.5em")
+                        property("background-color", "rgb(59, 130, 246)")
+                        property("color", "white")
+                        property("border", "none")
+                        property("border-radius", "0.375em")
+                        property("cursor", "pointer")
+                        property("font-size", "1em")
+                        property("font-weight", "600")
+                        property("transition", "background-color 0.2s")
+                        property("align-self", "flex-start")
+                    }
+                    onMouseOver { event ->
+                        event.currentTarget.asDynamic().style.backgroundColor = "rgb(37, 99, 235)"
+                    }
+                    onMouseOut { event ->
+                        event.currentTarget.asDynamic().style.backgroundColor = "rgb(59, 130, 246)"
+                    }
+                }
+            ) {
+                Text("+ Create New COT")
             }
-            error != null -> {
-                SpanText(
-                    "Error: $error",
-                    modifier = Modifier.color(rgb(220, 38, 38))
-                )
-            }
-            cots.isEmpty() -> {
-                SpanText("No COTs found. Create your first COT using the API!")
-            }
-            else -> {
-                Column(modifier = Modifier.gap(1.em)) {
-                    cots.forEach { cot ->
-                        CotCard(cot)
+            
+            when {
+                loading -> {
+                    SpanText("Loading COTs...")
+                }
+                error != null -> {
+                    SpanText(
+                        "Error: $error",
+                        modifier = Modifier.color(rgb(220, 38, 38))
+                    )
+                }
+                cots.isEmpty() -> {
+                    SpanText("No COTs found. Create your first COT!")
+                }
+                else -> {
+                    Column(modifier = Modifier.gap(1.em)) {
+                        cots.forEach { cot ->
+                            CotCard(cot)
+                        }
                     }
                 }
             }
