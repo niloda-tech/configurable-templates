@@ -223,6 +223,32 @@ private fun CotDetailView(
         // Action Buttons
         Row(modifier = Modifier.gap(1.em)) {
             if (!showDeleteConfirm) {
+                // Generate Button
+                Button(
+                    attrs = {
+                        onClick { ctx.router.navigateTo("/cots/generate/${cot.id}") }
+                        style {
+                            property("padding", "0.75em 1.5em")
+                            property("background-color", "rgb(34, 197, 94)")
+                            property("color", "white")
+                            property("border", "none")
+                            property("border-radius", "0.5em")
+                            property("cursor", "pointer")
+                            property("font-size", "1em")
+                            property("font-weight", "600")
+                            property("transition", "background-color 0.2s")
+                        }
+                        onMouseOver { event ->
+                            event.currentTarget.asDynamic().style.backgroundColor = "rgb(22, 163, 74)"
+                        }
+                        onMouseOut { event ->
+                            event.currentTarget.asDynamic().style.backgroundColor = "rgb(34, 197, 94)"
+                        }
+                    }
+                ) {
+                    Text("Generate Output")
+                }
+                
                 // Edit Button
                 Button(
                     attrs = {

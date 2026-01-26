@@ -8,7 +8,7 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.browser.window
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.*
 
 @Serializable
 data class CotSummary(
@@ -46,7 +46,7 @@ data class UpdateCotRequest(
 
 @Serializable
 data class GenerateRequest(
-    val parameters: Map<String, String>
+    val parameters: Map<String, JsonElement>
 )
 
 @Serializable
