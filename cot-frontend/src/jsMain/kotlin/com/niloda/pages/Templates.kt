@@ -67,6 +67,7 @@ private fun CotCard(cot: CotSummary) {
     ) {
         Div(
             attrs = {
+                classes("cot-card")
                 style {
                     property("width", "100%")
                     property("padding", "1em")
@@ -81,12 +82,14 @@ private fun CotCard(cot: CotSummary) {
                     property("gap", "0.5em")
                 }
                 onMouseOver { event ->
-                    event.currentTarget.asDynamic().style.borderColor = "rgb(59, 130, 246)"
-                    event.currentTarget.asDynamic().style.backgroundColor = "rgb(249, 250, 251)"
+                    val target = event.currentTarget.asDynamic()
+                    target.style.borderColor = "rgb(59, 130, 246)"
+                    target.style.backgroundColor = "rgb(249, 250, 251)"
                 }
                 onMouseOut { event ->
-                    event.currentTarget.asDynamic().style.borderColor = "rgb(209, 213, 219)"
-                    event.currentTarget.asDynamic().style.backgroundColor = "rgb(255, 255, 255)"
+                    val target = event.currentTarget.asDynamic()
+                    target.style.borderColor = "rgb(209, 213, 219)"
+                    target.style.backgroundColor = "rgb(255, 255, 255)"
                 }
             }
         ) {

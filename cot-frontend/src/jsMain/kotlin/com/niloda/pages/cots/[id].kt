@@ -16,7 +16,6 @@ import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.text.SpanText
 import kotlinx.browser.window
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Button
@@ -28,6 +27,7 @@ import org.jetbrains.compose.web.dom.Text
 fun CotDetailPage() {
     val ctx = rememberPageContext()
     val id = ctx.route.params["id"] ?: ""
+    val scope = rememberCoroutineScope()
     
     var cot by remember { mutableStateOf<CotDetailResponse?>(null) }
     var loading by remember { mutableStateOf(true) }
@@ -62,11 +62,11 @@ fun CotDetailPage() {
                     onDeleteClick = { showDeleteConfirm = true },
                     onDeleteConfirm = {
                         deleting = true
-                        MainScope().launch {
+                        scope.launch {
                             ApiClient.deleteCot(id)
                                 .onSuccess {
                                     // Navigate back to templates list
-                                    window.location.href = "/templates"
+                                    ctx.router.navigateTo("/templates")
                                 }
                                 .onFailure {
                                     error = "Failed to delete: ${it.message}"
