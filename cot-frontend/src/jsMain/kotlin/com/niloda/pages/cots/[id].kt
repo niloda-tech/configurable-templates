@@ -135,6 +135,8 @@ private fun CotDetailView(
     onDeleteConfirm: () -> Unit,
     onDeleteCancel: () -> Unit
 ) {
+    val ctx = rememberPageContext()
+    
     Column(modifier = Modifier.gap(1.5.em)) {
         // Header with back link and actions
         Row(
@@ -218,38 +220,67 @@ private fun CotDetailView(
             }
         }
         
-        // Delete Button
-        if (!showDeleteConfirm) {
-            Button(
-                attrs = {
-                    onClick { onDeleteClick() }
-                    style {
-                        property("padding", "0.75em 1.5em")
-                        property("background-color", "rgb(220, 38, 38)")
-                        property("color", "white")
-                        property("border", "none")
-                        property("border-radius", "0.5em")
-                        property("cursor", "pointer")
-                        property("font-size", "1em")
-                        property("font-weight", "600")
-                        property("transition", "background-color 0.2s")
+        // Action Buttons
+        Row(modifier = Modifier.gap(1.em)) {
+            if (!showDeleteConfirm) {
+                // Edit Button
+                Button(
+                    attrs = {
+                        onClick { ctx.router.navigateTo("/cots/edit/${cot.id}") }
+                        style {
+                            property("padding", "0.75em 1.5em")
+                            property("background-color", "rgb(59, 130, 246)")
+                            property("color", "white")
+                            property("border", "none")
+                            property("border-radius", "0.5em")
+                            property("cursor", "pointer")
+                            property("font-size", "1em")
+                            property("font-weight", "600")
+                            property("transition", "background-color 0.2s")
+                        }
+                        onMouseOver { event ->
+                            event.currentTarget.asDynamic().style.backgroundColor = "rgb(37, 99, 235)"
+                        }
+                        onMouseOut { event ->
+                            event.currentTarget.asDynamic().style.backgroundColor = "rgb(59, 130, 246)"
+                        }
                     }
-                    onMouseOver { event ->
-                        event.currentTarget.asDynamic().style.backgroundColor = "rgb(185, 28, 28)"
-                    }
-                    onMouseOut { event ->
-                        event.currentTarget.asDynamic().style.backgroundColor = "rgb(220, 38, 38)"
-                    }
+                ) {
+                    Text("Edit COT")
                 }
-            ) {
-                Text("Delete COT")
+                
+                // Delete Button
+                Button(
+                    attrs = {
+                        onClick { onDeleteClick() }
+                        style {
+                            property("padding", "0.75em 1.5em")
+                            property("background-color", "rgb(220, 38, 38)")
+                            property("color", "white")
+                            property("border", "none")
+                            property("border-radius", "0.5em")
+                            property("cursor", "pointer")
+                            property("font-size", "1em")
+                            property("font-weight", "600")
+                            property("transition", "background-color 0.2s")
+                        }
+                        onMouseOver { event ->
+                            event.currentTarget.asDynamic().style.backgroundColor = "rgb(185, 28, 28)"
+                        }
+                        onMouseOut { event ->
+                            event.currentTarget.asDynamic().style.backgroundColor = "rgb(220, 38, 38)"
+                        }
+                    }
+                ) {
+                    Text("Delete COT")
+                }
+            } else {
+                DeleteConfirmation(
+                    deleting = deleting,
+                    onConfirm = onDeleteConfirm,
+                    onCancel = onDeleteCancel
+                )
             }
-        } else {
-            DeleteConfirmation(
-                deleting = deleting,
-                onConfirm = onDeleteConfirm,
-                onCancel = onDeleteCancel
-            )
         }
     }
 }
