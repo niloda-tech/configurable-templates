@@ -15,7 +15,7 @@ import com.varabyte.kobweb.silk.components.text.SpanText
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 
-@Page("/create")
+@Page("/cots/create")
 @Composable
 fun CreateCotPage() {
     val ctx = rememberPageContext()

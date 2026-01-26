@@ -250,6 +250,9 @@ fun CotEditor(
     }
 }
 
+// Regex pattern for template name validation (compiled once)
+private val TEMPLATE_NAME_PATTERN = Regex("^[A-Za-z][A-Za-z0-9_]*$")
+
 /**
  * Client-side validation for COT input
  * Returns list of validation errors
@@ -262,7 +265,7 @@ private fun validateCotInput(name: String, dslCode: String): List<String> {
         errors.add("Template name is required")
     } else if (name.length < 3) {
         errors.add("Template name must be at least 3 characters")
-    } else if (!name.matches(Regex("^[A-Za-z][A-Za-z0-9_]*$"))) {
+    } else if (!name.matches(TEMPLATE_NAME_PATTERN)) {
         errors.add("Template name must start with a letter and contain only letters, numbers, and underscores")
     }
     
@@ -275,16 +278,25 @@ private fun validateCotInput(name: String, dslCode: String): List<String> {
             errors.add("DSL code must start with 'cot('")
         }
         
-        // Check for balanced braces
-        val openBraces = dslCode.count { it == '{' }
-        val closeBraces = dslCode.count { it == '}' }
+        // Check for balanced braces and parentheses in a single pass
+        var openBraces = 0
+        var closeBraces = 0
+        var openParens = 0
+        var closeParens = 0
+        
+        dslCode.forEach { char ->
+            when (char) {
+                '{' -> openBraces++
+                '}' -> closeBraces++
+                '(' -> openParens++
+                ')' -> closeParens++
+            }
+        }
+        
         if (openBraces != closeBraces) {
             errors.add("Unbalanced braces: $openBraces opening '{' but $closeBraces closing '}'")
         }
         
-        // Check for balanced parentheses
-        val openParens = dslCode.count { it == '(' }
-        val closeParens = dslCode.count { it == ')' }
         if (openParens != closeParens) {
             errors.add("Unbalanced parentheses: $openParens opening '(' but $closeParens closing ')'")
         }

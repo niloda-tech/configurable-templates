@@ -18,7 +18,7 @@ import com.varabyte.kobweb.silk.components.text.SpanText
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 
-@Page("/edit/{id}")
+@Page("/cots/edit/{id}")
 @Composable
 fun EditCotPage() {
     val ctx = rememberPageContext()
