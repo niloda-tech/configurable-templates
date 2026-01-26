@@ -64,7 +64,9 @@ fun CotEditor(
                     value(name)
                     onInput { name = it.value }
                     placeholder("Enter template name (e.g., GreetingTemplate)")
-                    disabled(isSubmitting)
+                    if (isSubmitting) {
+                        attr("disabled", "")
+                    }
                     style {
                         property("width", "100%")
                         property("padding", "0.75em")
@@ -109,8 +111,10 @@ fun CotEditor(
                 attrs = {
                     id("cot-dsl")
                     onInput { dslCode = it.value }
-                    disabled(isSubmitting)
-                    rows(15)
+                    if (isSubmitting) {
+                        attr("disabled", "")
+                    }
+                    attr("rows", "15")
                     style {
                         property("width", "100%")
                         property("padding", "1em")
