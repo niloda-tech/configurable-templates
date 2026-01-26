@@ -10,7 +10,10 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.silk.components.text.SpanText
+import com.varabyte.kobweb.silk.components.navigation.Link
+import com.varabyte.kobweb.compose.ui.attrsModifier
 import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.Div
 
 @Page
 @Composable
@@ -59,38 +62,67 @@ fun TemplatesPage() {
 
 @Composable
 private fun CotCard(cot: CotSummary) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(1.em)
-            .border(1.px, LineStyle.Solid, rgb(209, 213, 219))
-            .borderRadius(0.5.em)
-            .gap(0.5.em)
+    Link(
+        path = "/cots/${cot.id}"
     ) {
-        SpanText(
-            cot.name,
-            modifier = Modifier
-                .fontSize(1.3.em)
-                .fontWeight(600)
-        )
-        
-        Row(modifier = Modifier.gap(1.em)) {
+        Div(
+            attrs = {
+                style {
+                    property("width", "100%")
+                    property("padding", "1em")
+                    property("border", "1px solid rgb(209, 213, 219)")
+                    property("border-radius", "0.5em")
+                    property("background-color", "rgb(255, 255, 255)")
+                    property("transition", "all 0.2s ease-in-out")
+                    property("cursor", "pointer")
+                    property("text-decoration", "none")
+                    property("display", "flex")
+                    property("flex-direction", "column")
+                    property("gap", "0.5em")
+                }
+                onMouseOver { event ->
+                    event.currentTarget.asDynamic().style.borderColor = "rgb(59, 130, 246)"
+                    event.currentTarget.asDynamic().style.backgroundColor = "rgb(249, 250, 251)"
+                }
+                onMouseOut { event ->
+                    event.currentTarget.asDynamic().style.borderColor = "rgb(209, 213, 219)"
+                    event.currentTarget.asDynamic().style.backgroundColor = "rgb(255, 255, 255)"
+                }
+            }
+        ) {
             SpanText(
-                "Created: ${cot.createdAt}",
-                modifier = Modifier.color(rgb(107, 114, 128)).fontSize(0.9.em)
+                cot.name,
+                modifier = Modifier
+                    .fontSize(1.3.em)
+                    .fontWeight(600)
+                    .color(rgb(17, 24, 39))
             )
+
+            Div(
+                attrs = {
+                    style {
+                        property("display", "flex")
+                        property("gap", "1em")
+                    }
+                }
+            ) {
+                SpanText(
+                    "Created: ${cot.createdAt}",
+                    modifier = Modifier.color(rgb(107, 114, 128)).fontSize(0.9.em)
+                )
+                SpanText(
+                    "Updated: ${cot.updatedAt}",
+                    modifier = Modifier.color(rgb(107, 114, 128)).fontSize(0.9.em)
+                )
+            }
+
             SpanText(
-                "Updated: ${cot.updatedAt}",
-                modifier = Modifier.color(rgb(107, 114, 128)).fontSize(0.9.em)
+                "ID: ${cot.id}",
+                modifier = Modifier
+                    .color(rgb(107, 114, 128))
+                    .fontSize(0.85.em)
+                    .fontFamily("monospace")
             )
         }
-        
-        SpanText(
-            "ID: ${cot.id}",
-            modifier = Modifier
-                .color(rgb(107, 114, 128))
-                .fontSize(0.85.em)
-                .fontFamily("monospace")
-        )
     }
 }
