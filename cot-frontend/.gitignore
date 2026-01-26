@@ -1,0 +1,6 @@
+.gradle/
+.kobweb/
+build/
+*.iml
+.idea/
+*.log

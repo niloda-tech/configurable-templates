@@ -1,0 +1,14 @@
+site:
+  title: "COT Editor"
+  description: "Configurable Templates Editor"
+
+server:
+  files:
+    dev:
+      contentRoot: "build/processedResources/js/main/public"
+      script: "build/kotlin-webpack/js/developmentExecutable/cot-frontend.js"
+    prod:
+      script: "build/kotlin-webpack/js/productionExecutable/cot-frontend.js"
+      siteRoot: ".kobweb/site"
+
+  port: 8081
