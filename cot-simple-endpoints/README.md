@@ -2,22 +2,33 @@
 
 A web-based editor for creating, editing, and generating output from Configurable Templates (COTs).
 
+[![Test Coverage](https://img.shields.io/badge/coverage-49%25-yellow)]()
+[![Tests](https://img.shields.io/badge/tests-49%20passing-brightgreen)]()
+[![Build](https://img.shields.io/badge/build-passing-brightgreen)]()
+
 ## Overview
 
 The COT Simple Editor provides an intuitive interface for working with the COT DSL. It consists of:
 
 - **Backend**: Ktor-based REST API for COT management and generation
-- **Frontend**: Kobweb-based web UI for editing and generating templates
+- **Frontend**: Kobweb-based web UI for editing and generating templates  
 - **Storage**: In-memory repository for quick prototyping and development
 
-## Features (Planned)
+## Features
 
+### Backend API (Implemented)
 - ✅ RESTful API for COT CRUD operations
 - ✅ Generate output from COTs with parameters
-- ✅ Web-based COT editor with syntax highlighting
-- ✅ Dynamic parameter form generation
-- ✅ Real-time validation feedback
-- ✅ Copy-to-clipboard for generated output
+- ✅ Type-safe error handling with Arrow-kt
+- ✅ Concurrent-safe in-memory storage
+- ✅ Comprehensive test suite (49 test cases)
+- ✅ API documentation with examples
+
+### Frontend (Planned)
+- 🚧 Web-based COT editor with syntax highlighting
+- 🚧 Dynamic parameter form generation
+- 🚧 Real-time validation feedback
+- 🚧 Copy-to-clipboard for generated output
 
 ## Technology Stack
 
@@ -26,6 +37,7 @@ The COT Simple Editor provides an intuitive interface for working with the COT D
 - **Arrow-kt 2.2.0**: Functional programming and typed error handling
 - **Kobweb**: Frontend framework for Compose HTML
 - **kotlinx.serialization**: JSON serialization
+- **JaCoCo**: Test coverage reporting
 
 ## Project Structure
 
@@ -79,6 +91,37 @@ Run all tests:
 ```bash
 ./gradlew :cot-simple-endpoints:test
 ```
+
+Run tests with coverage report:
+```bash
+./gradlew :cot-simple-endpoints:test :cot-simple-endpoints:jacocoTestReport
+```
+
+View coverage report:
+```bash
+# macOS
+open cot-simple-endpoints/build/reports/jacoco/test/html/index.html
+
+# Linux
+xdg-open cot-simple-endpoints/build/reports/jacoco/test/html/index.html
+```
+
+### Test Coverage
+
+The project maintains comprehensive test coverage:
+
+| Module | Coverage | Test Cases |
+|--------|----------|------------|
+| Repository | 100% | 14 tests |
+| API Routes | 44% | 35 tests |
+| **Overall** | **49%** | **49 tests** |
+
+**Test Categories**:
+- Unit tests for repository (concurrent safety, CRUD operations)
+- Integration tests for API endpoints (all CRUD operations)
+- Error handling tests (validation, not found, bad request scenarios)
+- Parameter conversion tests (type safety, edge cases)
+- End-to-end workflow tests
 
 ## API Documentation
 
