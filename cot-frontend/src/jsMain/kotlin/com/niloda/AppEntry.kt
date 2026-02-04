@@ -59,25 +59,21 @@ fun injectResponsiveStyles() {
             }
             
             /* Reduce padding on mobile */
-            .main-content {
-                padding: 1em !important;
+            body {
+                padding: 1em;
             }
             
-            /* Reduce page title size on mobile */
-            .page-title {
-                font-size: 1.5em !important;
-            }
-            
-            /* Make buttons stack on mobile */
-            button {
+            /* Make primary action buttons full-width on mobile */
+            button[type="submit"],
+            button.primary-action {
                 width: 100%;
             }
         }
         
         /* Tablet adjustments */
         @media (max-width: 1024px) and (min-width: 769px) {
-            .main-content {
-                padding: 1.5em !important;
+            body {
+                padding: 1.5em;
             }
         }
     """.trimIndent()

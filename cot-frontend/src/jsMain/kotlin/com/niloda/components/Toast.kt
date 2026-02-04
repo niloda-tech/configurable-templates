@@ -58,7 +58,10 @@ object ToastManager {
     }
     
     fun removeToast(id: String) {
-        _toasts.removeAll { it.id == id }
+        val toastToRemove = _toasts.find { it.id == id }
+        if (toastToRemove != null) {
+            _toasts.remove(toastToRemove)
+        }
     }
 }
 
