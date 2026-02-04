@@ -75,19 +75,26 @@ fun ToastContainer() {
             .top(1.em)
             .right(1.em)
             .zIndex(9999)
-            .width(min(90.vw, 400.px))
     ) {
-        Column(modifier = Modifier.gap(0.75.em)) {
-            ToastManager.toasts.forEach { toast ->
-                LaunchedEffect(toast.id) {
-                    scope.launch {
-                        delay(toast.duration)
+        Div(
+            attrs = {
+                style {
+                    property("width", "min(90vw, 400px)")
+                }
+            }
+        ) {
+            Column(modifier = Modifier.gap(0.75.em)) {
+                ToastManager.toasts.forEach { toast ->
+                    LaunchedEffect(toast.id) {
+                        scope.launch {
+                            delay(toast.duration)
+                            ToastManager.removeToast(toast.id)
+                        }
+                    }
+                    
+                    Toast(toast) {
                         ToastManager.removeToast(toast.id)
                     }
-                }
-                
-                Toast(toast) {
-                    ToastManager.removeToast(toast.id)
                 }
             }
         }
@@ -144,7 +151,7 @@ private fun Toast(toast: ToastMessage, onDismiss: () -> Unit) {
             icon,
             modifier = Modifier
                 .fontSize(1.25.em)
-                .color(rgb(borderColor.removePrefix("rgb(").removeSuffix(")")))
+                .color(parseRgbColor(borderColor))
                 .fontWeight(700)
         )
         
@@ -154,7 +161,7 @@ private fun Toast(toast: ToastMessage, onDismiss: () -> Unit) {
             modifier = Modifier
                 .flex(1)
                 .fontSize(0.95.em)
-                .color(rgb(textColor.removePrefix("rgb(").removeSuffix(")")))
+                .color(parseRgbColor(textColor))
         )
         
         // Close button
@@ -203,4 +210,12 @@ fun injectToastStyles() {
         }
     """.trimIndent()
     kotlinx.browser.document.head?.appendChild(style)
+}
+
+/**
+ * Parse RGB color string like "rgb(255, 0, 0)" to CSSColorValue
+ */
+private fun parseRgbColor(rgbString: String): CSSColorValue {
+    val values = rgbString.removePrefix("rgb(").removeSuffix(")").split(",").map { it.trim().toInt() }
+    return rgb(values[0], values[1], values[2])
 }

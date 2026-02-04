@@ -175,7 +175,11 @@ fun CotEditor(
                 modifier = Modifier
                     .fontSize(0.85.em)
                     .color(rgb(107, 114, 128))
-                    .fontStyle(FontStyle.Italic)
+                    .attrsModifier {
+                        style {
+                            property("font-style", "italic")
+                        }
+                    }
             )
         }
         
