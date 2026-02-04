@@ -3,6 +3,7 @@ package com.niloda.pages
 import androidx.compose.runtime.*
 import com.niloda.api.ApiClient
 import com.niloda.api.CotSummary
+import com.niloda.components.LoadingSpinner
 import com.niloda.components.PageLayout
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -70,13 +71,22 @@ fun TemplatesPage() {
             
             when {
                 loading -> {
-                    SpanText("Loading COTs...")
+                    LoadingSpinner("Loading COTs...")
                 }
                 error != null -> {
-                    SpanText(
-                        "Error: $error",
-                        modifier = Modifier.color(rgb(220, 38, 38))
-                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(1.em)
+                            .backgroundColor(rgb(254, 242, 242))
+                            .border(1.px, LineStyle.Solid, rgb(220, 38, 38))
+                            .borderRadius(0.375.em)
+                    ) {
+                        SpanText(
+                            "Error loading COTs: $error",
+                            modifier = Modifier.color(rgb(220, 38, 38))
+                        )
+                    }
                 }
                 cots.isEmpty() -> {
                     SpanText("No COTs found. Create your first COT!")

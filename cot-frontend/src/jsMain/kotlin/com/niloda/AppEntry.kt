@@ -1,6 +1,9 @@
 package com.niloda
 
 import androidx.compose.runtime.*
+import com.niloda.components.ToastContainer
+import com.niloda.components.injectSpinnerStyles
+import com.niloda.components.injectToastStyles
 import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
@@ -20,6 +23,65 @@ fun initStyles(ctx: InitSilkContext) {
     ctx.stylesheet.apply {
         registerStyleBase("body") { Modifier.scrollBehavior(ScrollBehavior.Smooth) }
     }
+    
+    // Inject CSS animations for toast and spinner
+    injectToastStyles()
+    injectSpinnerStyles()
+    injectResponsiveStyles()
+}
+
+/**
+ * Inject responsive CSS styles for mobile support
+ */
+fun injectResponsiveStyles() {
+    val style = kotlinx.browser.document.createElement("style")
+    style.textContent = """
+        /* Desktop navigation visible by default */
+        .desktop-nav {
+            display: flex !important;
+        }
+        
+        /* Mobile menu button hidden by default */
+        .mobile-menu-button {
+            display: none !important;
+        }
+        
+        /* Mobile responsive styles */
+        @media (max-width: 768px) {
+            /* Hide desktop nav on mobile */
+            .desktop-nav {
+                display: none !important;
+            }
+            
+            /* Show mobile menu button */
+            .mobile-menu-button {
+                display: block !important;
+            }
+            
+            /* Reduce padding on mobile */
+            .main-content {
+                padding: 1em !important;
+            }
+            
+            /* Reduce page title size on mobile */
+            .page-title {
+                font-size: 1.5em !important;
+            }
+            
+            /* Make buttons stack on mobile */
+            button {
+                width: 100%;
+            }
+        }
+        
+        /* Tablet adjustments */
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .main-content {
+                padding: 1.5em !important;
+            }
+        }
+    """.trimIndent()
+    kotlinx.browser.document.head?.appendChild(style)
 }
 
 @App
@@ -28,6 +90,7 @@ fun AppEntry(content: @Composable () -> Unit) {
     SilkApp {
         Surface(SmoothColorStyle.toModifier().minHeight(100.vh)) {
             content()
+            ToastContainer()  // Global toast notifications
         }
     }
 }

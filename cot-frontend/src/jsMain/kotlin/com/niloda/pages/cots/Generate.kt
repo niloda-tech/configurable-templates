@@ -4,7 +4,9 @@ import androidx.compose.runtime.*
 import com.niloda.api.ApiClient
 import com.niloda.api.CotDetailResponse
 import com.niloda.api.GenerateRequest
+import com.niloda.components.LoadingSpinner
 import com.niloda.components.PageLayout
+import com.niloda.components.ToastManager
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -60,7 +62,7 @@ fun GeneratePage() {
     PageLayout("Generate Output") {
         when {
             loading -> {
-                LoadingView()
+                LoadingSpinner("Loading template...")
             }
             loadError != null -> {
                 ErrorView(loadError!!)
@@ -184,10 +186,12 @@ fun GeneratePage() {
                                         ApiClient.generateOutput(id, GenerateRequest(jsonParams))
                                             .onSuccess { response ->
                                                 generatedOutput = response.output
+                                                ToastManager.showSuccess("Output generated successfully!")
                                                 isGenerating = false
                                             }
                                             .onFailure { e ->
                                                 generateError = e.message ?: "Unknown error occurred"
+                                                ToastManager.showError(generateError!!)
                                                 isGenerating = false
                                             }
                                     }
@@ -246,6 +250,7 @@ fun GeneratePage() {
                                             generatedOutput?.let { output ->
                                                 copyToClipboard(output)
                                                 copySuccess = true
+                                                ToastManager.showSuccess("Copied to clipboard!")
                                                 // Reset copy success after 2 seconds
                                                 scope.launch {
                                                     kotlinx.coroutines.delay(2000)

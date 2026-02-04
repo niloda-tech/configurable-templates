@@ -11,9 +11,14 @@ import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.text.SpanText
 import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.Button
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Text
 
 @Composable
 fun PageLayout(title: String, content: @Composable () -> Unit) {
+    var mobileMenuOpen by remember { mutableStateOf(false) }
+    
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -25,13 +30,77 @@ fun PageLayout(title: String, content: @Composable () -> Unit) {
                 .backgroundColor(rgb(248, 250, 252))
                 .borderBottom(1.px, LineStyle.Solid, rgb(226, 232, 240))
         ) {
-            Row(
-                modifier = Modifier.gap(2.em),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Link("/", "Home")
-                Link("/templates", "COTs")
-                Link("/about", "About")
+            Column(modifier = Modifier.fillMaxWidth()) {
+                // Desktop navigation
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .gap(2.em),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    SpanText(
+                        "COT Editor",
+                        modifier = Modifier
+                            .fontSize(1.2.em)
+                            .fontWeight(700)
+                            .color(rgb(59, 130, 246))
+                            .flex(1)
+                    )
+                    
+                    // Desktop menu
+                    Div(
+                        attrs = {
+                            style {
+                                property("display", "none")
+                            }
+                            classes("desktop-nav")
+                        }
+                    ) {
+                        Row(
+                            modifier = Modifier.gap(2.em),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Link("/", "Home")
+                            Link("/templates", "COTs")
+                            Link("/about", "About")
+                        }
+                    }
+                    
+                    // Mobile menu button
+                    Button(
+                        attrs = {
+                            onClick { mobileMenuOpen = !mobileMenuOpen }
+                            classes("mobile-menu-button")
+                            style {
+                                property("display", "none")
+                                property("background", "transparent")
+                                property("border", "none")
+                                property("cursor", "pointer")
+                                property("padding", "0.5em")
+                                property("font-size", "1.5em")
+                            }
+                        }
+                    ) {
+                        Text(if (mobileMenuOpen) "✕" else "☰")
+                    }
+                }
+                
+                // Mobile menu
+                if (mobileMenuOpen) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .gap(1.em)
+                            .padding(top = 1.em)
+                            .attrsModifier {
+                                classes("mobile-menu")
+                            }
+                    ) {
+                        Link("/", "Home", modifier = Modifier.fontSize(1.1.em))
+                        Link("/templates", "COTs", modifier = Modifier.fontSize(1.1.em))
+                        Link("/about", "About", modifier = Modifier.fontSize(1.1.em))
+                    }
+                }
             }
         }
         
@@ -40,6 +109,9 @@ fun PageLayout(title: String, content: @Composable () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(2.em)
+                .attrsModifier {
+                    classes("main-content")
+                }
         ) {
             SpanText(
                 title,
@@ -47,6 +119,9 @@ fun PageLayout(title: String, content: @Composable () -> Unit) {
                     .fontSize(2.em)
                     .fontWeight(700)
                     .margin(bottom = 1.em)
+                    .attrsModifier {
+                        classes("page-title")
+                    }
             )
             content()
         }
