@@ -16,9 +16,8 @@ class CotRoutesTestGet {
 
     @Test
     fun `GET api cots id returns COT when it exists`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         // Create a COT first
         val createResponse = client.post("/api/cots") {
@@ -38,9 +37,8 @@ class CotRoutesTestGet {
 
     @Test
     fun `GET api cots id returns 404 when COT does not exist`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         val response = client.get("/api/cots/nonexistent-id")
 

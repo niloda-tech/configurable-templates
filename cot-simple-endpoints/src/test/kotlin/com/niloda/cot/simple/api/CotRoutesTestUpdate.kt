@@ -16,9 +16,8 @@ class CotRoutesTestUpdate {
 
     @Test
     fun `PUT api cots id updates COT and returns 200`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         // Create a COT first
         val createResponse = client.post("/api/cots") {
@@ -44,9 +43,8 @@ class CotRoutesTestUpdate {
 
     @Test
     fun `PUT api cots id returns 404 when COT does not exist`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         val response = client.put("/api/cots/nonexistent-id") {
             contentType(ContentType.Application.Json)
@@ -60,9 +58,8 @@ class CotRoutesTestUpdate {
 
     @Test
     fun `PUT api cots id with empty name returns 400`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         // Create a COT first
         val createResponse = client.post("/api/cots") {
