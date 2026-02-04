@@ -16,9 +16,8 @@ class CotRoutesTestList {
 
     @Test
     fun `GET api cots returns empty list initially`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         val response = client.get("/api/cots")
         
@@ -29,9 +28,8 @@ class CotRoutesTestList {
 
     @Test
     fun `GET api cots returns all created COTs`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         // Create multiple COTs
         client.post("/api/cots") {
@@ -62,9 +60,8 @@ class CotRoutesTestList {
 
     @Test
     fun `CotSummary in list response contains correct fields`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         // Create a COT
         val createResponse = client.post("/api/cots") {

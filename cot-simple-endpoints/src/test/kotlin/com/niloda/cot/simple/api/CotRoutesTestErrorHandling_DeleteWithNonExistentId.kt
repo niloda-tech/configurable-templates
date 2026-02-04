@@ -16,9 +16,8 @@ class CotRoutesTestErrorHandling_DeleteWithNonExistentId {
 
     @Test
     fun `DELETE api cots with non-existent id returns 404`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         val response = client.delete("/api/cots/non-existent-id")
 

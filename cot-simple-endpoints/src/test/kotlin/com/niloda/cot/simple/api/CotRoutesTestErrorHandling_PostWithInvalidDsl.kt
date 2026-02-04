@@ -16,9 +16,8 @@ class CotRoutesTestErrorHandling_PostWithInvalidDsl {
 
     @Test
     fun `POST api cots with invalid DSL returns 400`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         val response = client.post("/api/cots") {
             contentType(ContentType.Application.Json)

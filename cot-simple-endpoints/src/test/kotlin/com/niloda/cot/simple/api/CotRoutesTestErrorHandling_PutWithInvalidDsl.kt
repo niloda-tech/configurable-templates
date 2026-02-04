@@ -16,9 +16,8 @@ class CotRoutesTestErrorHandling_PutWithInvalidDsl {
 
     @Test
     fun `PUT api cots with invalid DSL returns 400`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         // First create a COT
         val createResponse = client.post("/api/cots") {

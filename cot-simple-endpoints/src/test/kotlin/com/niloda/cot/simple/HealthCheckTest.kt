@@ -15,9 +15,8 @@ class HealthCheckTest {
 
     @Test
     fun `GET health returns ok status`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         val response = client.get("/health")
         

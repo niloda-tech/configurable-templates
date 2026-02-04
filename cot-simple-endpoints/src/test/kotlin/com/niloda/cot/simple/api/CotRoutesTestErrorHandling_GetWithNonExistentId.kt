@@ -16,9 +16,8 @@ class CotRoutesTestErrorHandling_GetWithNonExistentId {
 
     @Test
     fun `GET api cots with non-existent id returns 404`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         val response = client.get("/api/cots/non-existent-id")
 

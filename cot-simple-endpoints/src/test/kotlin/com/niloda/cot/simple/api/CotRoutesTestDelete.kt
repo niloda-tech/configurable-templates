@@ -16,9 +16,8 @@ class CotRoutesTestDelete {
 
     @Test
     fun `DELETE api cots id removes COT and returns 204`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         // Create a COT first
         val createResponse = client.post("/api/cots") {
@@ -38,9 +37,8 @@ class CotRoutesTestDelete {
 
     @Test
     fun `DELETE api cots id returns 404 when COT does not exist`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         val response = client.delete("/api/cots/nonexistent-id")
 
