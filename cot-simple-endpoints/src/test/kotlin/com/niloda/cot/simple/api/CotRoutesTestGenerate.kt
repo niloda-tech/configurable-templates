@@ -22,9 +22,8 @@ class CotRoutesTestGenerate {
 
     @Test
     fun `POST api cots id generate returns generated output`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         // Create a COT with conditional logic
         val createResponse = client.post("/api/cots") {
@@ -128,9 +127,8 @@ class CotRoutesTestGenerate {
 
     @Test
     fun `POST api cots id generate with integer parameter works`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         // Create a COT with repetition
         val createResponse = client.post("/api/cots") {
@@ -152,9 +150,8 @@ class CotRoutesTestGenerate {
 
     @Test
     fun `POST api cots id generate with string parameter works`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         // Create a COT with oneOf
         val createResponse = client.post("/api/cots") {
@@ -176,9 +173,8 @@ class CotRoutesTestGenerate {
 
     @Test
     fun `POST api cots id generate returns 404 when COT does not exist`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         val generateResponse = client.post("/api/cots/nonexistent-id/generate") {
             contentType(ContentType.Application.Json)
@@ -192,9 +188,8 @@ class CotRoutesTestGenerate {
 
     @Test
     fun `POST api cots id generate with complex parameters works`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         // Create a COT with multiple parameter types
         val createResponse = client.post("/api/cots") {

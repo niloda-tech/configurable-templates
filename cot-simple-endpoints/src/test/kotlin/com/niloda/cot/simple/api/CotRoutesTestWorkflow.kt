@@ -16,9 +16,8 @@ class CotRoutesTestWorkflow {
 
     @Test
     fun `complete CRUD workflow works correctly`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         // 1. List should be empty
         val listResponse1 = client.get("/api/cots")

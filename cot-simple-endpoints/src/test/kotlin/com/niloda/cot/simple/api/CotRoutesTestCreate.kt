@@ -16,9 +16,8 @@ class CotRoutesTestCreate {
 
     @Test
     fun `POST api cots creates new COT and returns 201`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         val response = client.post("/api/cots") {
             contentType(ContentType.Application.Json)
@@ -35,9 +34,8 @@ class CotRoutesTestCreate {
 
     @Test
     fun `POST api cots with empty name returns 400`() = testApplication {
-        application {
-            module()
-        }
+
+        application { module() }
 
         val response = client.post("/api/cots") {
             contentType(ContentType.Application.Json)
