@@ -40,6 +40,35 @@ fun CotEditor(
         validationErrors = validateCotInput(name, dslCode)
     }
     
+    // Keyboard shortcuts
+    DisposableEffect(Unit) {
+        val handleKeyDown = { event: dynamic ->
+            val e = event as org.w3c.dom.events.KeyboardEvent
+            
+            // Ctrl+S or Cmd+S to save
+            if ((e.ctrlKey || e.metaKey) && e.key == "s") {
+                e.preventDefault()
+                if (!isSubmitting && validationErrors.isEmpty()) {
+                    onSubmit(name, dslCode)
+                }
+            }
+            
+            // Escape to cancel
+            if (e.key == "Escape") {
+                e.preventDefault()
+                if (!isSubmitting) {
+                    onCancel()
+                }
+            }
+        }
+        
+        kotlinx.browser.window.addEventListener("keydown", handleKeyDown)
+        
+        onDispose {
+            kotlinx.browser.window.removeEventListener("keydown", handleKeyDown)
+        }
+    }
+    
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -138,6 +167,19 @@ fun CotEditor(
                     .fontSize(0.85.em)
                     .color(rgb(107, 114, 128))
                     .fontFamily("monospace")
+            )
+            
+            // Keyboard shortcuts hint
+            SpanText(
+                "💡 Tip: Press Ctrl+S (or Cmd+S) to save, Escape to cancel",
+                modifier = Modifier
+                    .fontSize(0.85.em)
+                    .color(rgb(107, 114, 128))
+                    .attrsModifier {
+                        style {
+                            property("font-style", "italic")
+                        }
+                    }
             )
         }
         

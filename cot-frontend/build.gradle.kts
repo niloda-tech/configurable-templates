@@ -28,7 +28,7 @@ kotlin {
             implementation(compose.html.core)
             implementation("com.varabyte.kobweb:kobweb-core:0.23.3")
             implementation("com.varabyte.kobweb:kobweb-silk:0.23.3")
-            implementation("com.varabyte.kobwebx:silk-icons-fa:0.23.3")
+            // Removed unused silk-icons-fa dependency for smaller bundle size
             
             // Ktor client for API calls to backend
             implementation("io.ktor:ktor-client-core:3.0.1")

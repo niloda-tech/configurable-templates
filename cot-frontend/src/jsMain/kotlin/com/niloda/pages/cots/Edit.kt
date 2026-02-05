@@ -5,7 +5,9 @@ import com.niloda.api.ApiClient
 import com.niloda.api.CotDetailResponse
 import com.niloda.api.UpdateCotRequest
 import com.niloda.components.CotEditor
+import com.niloda.components.LoadingSpinner
 import com.niloda.components.PageLayout
+import com.niloda.components.ToastManager
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
@@ -49,7 +51,7 @@ fun EditCotPage() {
     PageLayout("Edit COT") {
         when {
             loading -> {
-                LoadingView()
+                LoadingSpinner("Loading COT...")
             }
             loadError != null -> {
                 ErrorView(loadError!!)
@@ -112,11 +114,13 @@ fun EditCotPage() {
                             scope.launch {
                                 ApiClient.updateCot(id, UpdateCotRequest(name, dslCode))
                                     .onSuccess { response ->
+                                        ToastManager.showSuccess("COT updated successfully!")
                                         // Navigate back to the detail page
                                         ctx.router.navigateTo("/cots/${response.id}")
                                     }
                                     .onFailure { e ->
                                         submitError = e.message ?: "Unknown error occurred"
+                                        ToastManager.showError(submitError!!)
                                         isSubmitting = false
                                     }
                             }
@@ -128,26 +132,6 @@ fun EditCotPage() {
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun LoadingView() {
-    Box(
-        modifier = Modifier.fillMaxWidth().padding(2.em),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier.gap(1.em),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            SpanText(
-                "Loading COT...",
-                modifier = Modifier
-                    .fontSize(1.2.em)
-                    .color(rgb(107, 114, 128))
-            )
         }
     }
 }

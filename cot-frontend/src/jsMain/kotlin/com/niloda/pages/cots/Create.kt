@@ -5,6 +5,7 @@ import com.niloda.api.ApiClient
 import com.niloda.api.CreateCotRequest
 import com.niloda.components.CotEditor
 import com.niloda.components.PageLayout
+import com.niloda.components.ToastManager
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
@@ -85,11 +86,13 @@ fun CreateCotPage() {
                     scope.launch {
                         ApiClient.createCot(CreateCotRequest(name, dslCode))
                             .onSuccess { response ->
+                                ToastManager.showSuccess("COT created successfully!")
                                 // Navigate to the newly created COT's detail page
                                 ctx.router.navigateTo("/cots/${response.id}")
                             }
                             .onFailure { e ->
                                 error = e.message ?: "Unknown error occurred"
+                                ToastManager.showError(error!!)
                                 isSubmitting = false
                             }
                     }

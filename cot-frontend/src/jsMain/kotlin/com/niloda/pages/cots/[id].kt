@@ -3,7 +3,9 @@ package com.niloda.pages.cots
 import androidx.compose.runtime.*
 import com.niloda.api.ApiClient
 import com.niloda.api.CotDetailResponse
+import com.niloda.components.LoadingSpinner
 import com.niloda.components.PageLayout
+import com.niloda.components.ToastManager
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -52,7 +54,7 @@ fun CotDetailPage() {
     PageLayout("COT Details") {
         when {
             loading -> {
-                LoadingSpinner()
+                LoadingSpinner("Loading COT details...")
             }
             error != null -> {
                 ErrorMessage(error!!)
@@ -65,11 +67,13 @@ fun CotDetailPage() {
                         scope.launch {
                             ApiClient.deleteCot(id)
                                 .onSuccess {
+                                    ToastManager.showSuccess("COT deleted successfully")
                                     // Navigate back to templates list
                                     ctx.router.navigateTo("/templates")
                                 }
                                 .onFailure {
                                     error = "Failed to delete: ${it.message}"
+                                    ToastManager.showError(error!!)
                                     deleting = false
                                     showDeleteConfirm = false
                                 }
@@ -78,26 +82,6 @@ fun CotDetailPage() {
                     onDeleteCancel = { showDeleteConfirm = false }
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun LoadingSpinner() {
-    Box(
-        modifier = Modifier.fillMaxWidth().padding(2.em),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier.gap(1.em),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            SpanText(
-                "Loading...",
-                modifier = Modifier
-                    .fontSize(1.2.em)
-                    .color(rgb(107, 114, 128))
-            )
         }
     }
 }
