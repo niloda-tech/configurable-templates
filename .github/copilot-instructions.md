@@ -29,14 +29,14 @@ This project strictly follows **functional programming** principles using Arrow-
 1. **Never throw exceptions in business logic** - Use Arrow's Raise DSL for typed error handling
 2. **Prefer immutability** - Use `val` over `var`, immutable data structures
 3. **Use expressions over statements** - Write code as expressions wherever possible
-4. **Leverage context-style functions** - Use `context(Raise<E>)` for composable error-prone operations
-5. **Explicit error handling** - Public APIs return `Either<E, A>`, internal functions use `context(Raise<E>)`
+4. **Leverage context parameters** - Use `context(_: Raise<E>)` for composable error-prone operations
+5. **Explicit error handling** - Public APIs return `Either<E, A>`, internal functions use context parameters
 
 ### Error Handling Rules
 
-**CRITICAL**: Follow these error handling requirements using Arrow's context-style API:
+**CRITICAL**: Follow these error handling requirements using Arrow's Raise DSL with context parameters:
 
-- **Prefer `context(Raise<E>)` functions** for composable, error-prone operations
+- **Prefer context parameter functions** - Use `context(_: Raise<E>)` for composable, error-prone operations
 - Public API functions that can fail **must** return `Either<E, A>`
 - **Never** throw exceptions for expected error conditions
 - Use `raise(error)` to signal errors within `Raise` context
@@ -44,13 +44,13 @@ This project strictly follows **functional programming** principles using Arrow-
 - Use `ensure(condition) { Error }` for validation checks
 - Convert external library exceptions to typed errors at boundaries
 
-**Primary Pattern - Context-style functions:**
+**Primary Pattern - Context parameters with Raise:**
 ```kotlin
 sealed interface DomainError
 data class ValidationError(val msg: String) : DomainError
 
-// Internal composable function using context receiver
-context(Raise<DomainError>)
+// Internal composable function using context parameter
+context(_: Raise<DomainError>)
 fun validateInput(input: String): String {
     ensure(input.isNotBlank()) { ValidationError("Input cannot be blank") }
     return input
@@ -65,7 +65,7 @@ fun processInput(input: String): Either<DomainError, String> = either {
 
 ### Code Style
 
-- **Prefer context receivers** - Use `context(Raise<E>)` for internal error-prone functions
+- **Prefer context parameters** - Use `context(_: Raise<E>)` for internal error-prone functions
 - Use Arrow's data types: `Either`, `Option`, `Validated`
 - Keep computation blocks expression-oriented
 - Avoid side effects inside `either`/`option` blocks
@@ -182,20 +182,20 @@ val template = cot("MyTemplate") {
 
 ## What to Avoid
 
-1. **Don't throw exceptions** in business logic - Use `context(Raise<E>)` and typed errors instead
+1. **Don't throw exceptions** in business logic - Use context parameters with `Raise` and typed errors instead
 2. **Don't use nullable types (`?`)** when `Option` is more appropriate
 3. **Don't mix concerns** - Keep frontend and backend modules separate
 4. **Don't use `var`** unless absolutely necessary - Prefer immutability
 5. **Don't add new dependencies** without considering Arrow-kt alternatives
 6. **Don't modify working tests** - Only add new tests for new features
 7. **Don't skip error handling** - All failure cases must be modeled in types
-8. **Don't use nested `either` blocks** - Use `context(Raise<E>)` functions for better composition
+8. **Don't use nested `either` blocks** - Use context parameter functions for better composition
 
 ## Best Practices
 
 1. **Analyze existing code** before making changes to understand patterns
 2. **Start with types** - Define domain errors and success types first
-3. **Use `context(Raise<E>)` functions** for composable, error-prone operations
+3. **Use context parameter functions** - Write `context(_: Raise<E>)` for composable, error-prone operations
 4. **Wrap context functions in `either { }`** for public API boundaries
 5. **Test both success and failure paths** thoroughly
 6. **Keep functions small** and composable
