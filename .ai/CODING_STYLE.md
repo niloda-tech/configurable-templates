@@ -48,7 +48,7 @@ Leverage Arrow's latest Raise DSL to model typed errors without throwing excepti
 -   Prefer returning `Either<E, A>` from public APIs that can fail.
 -   Implement logic inside `either { ... }` which provides a `Raise<E>` context.
 -   Use `raise(e)` to short‑circuit on failures; the last expression becomes the success value.
--   Define reusable validations as `context(Raise<E>)` functions for composability.
+-   Define reusable validations as **context-parameter functions** (Kotlin 2.2+): `context(_: Raise<E>)`.
 
 Example (typed validation with `Raise`):
 
@@ -57,7 +57,7 @@ sealed interface DomainError
 data class EmptyName(val msg: String) : DomainError
 data class InvalidChar(val c: Char) : DomainError
 
-context(Raise<DomainError>)
+context(_: Raise<DomainError>)
 fun validateName(name: String): String {
     ensure(name.isNotBlank()) { EmptyName("Name is empty") }
     ensure(name.all { it.isLetter() }) { InvalidChar(name.first { !it.isLetter() }) }
@@ -115,9 +115,9 @@ Prefer `ValidatedNel<E, A>` when error accumulation is required; otherwise defau
 
 ```kotlin
 fun firstLetterIfAlpha(s: String): Option<Char> = option {
-    ensure(s.isNotEmpty()) { Unit }
+    ensure(s.isNotEmpty()) { }
     val c = s.first()
-    ensure(c.isLetter()) { Unit }
+    ensure(c.isLetter()) { }
     c
 }
 ```
@@ -125,7 +125,7 @@ fun firstLetterIfAlpha(s: String): Option<Char> = option {
 ### 9. API Conventions for This Project
 
 -   Public functions that can fail should return `Either<DomainError, A>` and never throw for expected conditions.
--   Provide internal `context(Raise<DomainError>)` helpers for validations and small building blocks.
+-   Provide internal `context(_: Raise<DomainError>)` helpers for validations and small building blocks.
 -   Keep data immutable; avoid `var` and prefer pure functions.
 -   Use expressive names; avoid abbreviations unless widely accepted.
 -   Keep computation blocks expression‑oriented; avoid side effects inside `either`/`option`.

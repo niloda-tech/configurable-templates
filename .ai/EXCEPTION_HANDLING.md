@@ -20,21 +20,14 @@ Inside the function, we operate within a `Raise` context, which allows us to sho
 **Example:**
 
 ```kotlin
-import arrow.core.Either
-import arrow.core.raise.either
-
 // Define potential errors
 sealed interface GreeterError
 data class EmptyName(val message: String) : GreeterError
 data class InvalidChar(val char: Char) : GreeterError
 
 fun greet(name: String): Either<GreeterError, String> = either {
-    if (name.isEmpty()) {
-        raise(EmptyName("Name is empty"))
-    }
-    if (name.any { !it.isLetter() }) {
-        raise(InvalidChar(name.first { !it.isLetter() }))
-    }
+    ensure(name.isNotEmpty()) { EmptyName("Name is empty") }
+    ensure(name.all { it.isLetter() }) { InvalidChar(name.first { !it.isLetter() }) }
     "Hello, $name"
 }
 ```
@@ -53,18 +46,13 @@ Use `Either.catch` and then map the error.
 **Example:**
 
 ```kotlin
-import arrow.core.Either
-import arrow.core.raise.either
-
 sealed interface ParseError
 data class NotANumber(val input: String) : ParseError
 
 fun safeParse(s: String): Either<ParseError, Int> = either {
-    Either.catch {
-        s.toInt()
-    }.mapLeft {
-        raise(NotANumber(s))
-    }.bind()
+    Either.catch { s.toInt() }
+        .mapLeft { NotANumber(s) }
+        .bind()
 }
 ```
 
@@ -72,17 +60,13 @@ By doing this, you translate the unsafe, exception-throwing world into the safe,
 
 ### Composable, Type-Safe Functions
 
-A powerful pattern is to define functions directly on a `Raise` context. This makes them automatically composable.
+A powerful pattern is to define functions directly on a `Raise` context parameter. This makes them automatically composable.
 
 ```kotlin
-context(Raise<GreeterError>)
+context(_: Raise<GreeterError>)
 fun validatedName(name: String): String {
-    if (name.isEmpty()) {
-        raise(EmptyName("Name is empty"))
-    }
-    if (name.any { !it.isLetter() }) {
-        raise(InvalidChar(name.first { !it.isLetter() }))
-    }
+    ensure(name.isNotEmpty()) { EmptyName("Name is empty") }
+    ensure(name.all { it.isLetter() }) { InvalidChar(name.first { !it.isLetter() }) }
     return name
 }
 
