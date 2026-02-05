@@ -55,10 +55,13 @@ class StringEscapingTest {
 
     @Test
     fun `handles multiple escape sequences`() {
+        // Input: Path: "C:\temp\file.txt" $HOME\nEnd
         val value = """Path: "C:\temp\file.txt" ${'$'}HOME\nEnd"""
         val escaped = escapeStringValue(value)
         
-        // After escaping: quotes become \", backslashes become \\, dollar signs become \$, \n stays \n
+        // After escaping: quotes -> \", backslashes -> \\, dollar signs -> \$, literal \n -> \\n
+        // Expected output: Path: \"C:\\temp\\file.txt\" \$HOME\\nEnd
+        // Note: In Kotlin raw strings, \${'$'} represents the literal characters \$
         assertEquals("""Path: \"C:\\temp\\file.txt\" \${'$'}HOME\\nEnd""", escaped)
     }
 
