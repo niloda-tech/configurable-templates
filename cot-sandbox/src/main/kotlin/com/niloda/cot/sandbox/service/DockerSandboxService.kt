@@ -8,7 +8,6 @@ import com.niloda.cot.sandbox.domain.SandboxError
 import com.niloda.cot.sandbox.domain.SandboxRequest
 import com.niloda.cot.sandbox.domain.SandboxResponse
 import org.slf4j.LoggerFactory
-import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.TimeUnit
@@ -60,8 +59,8 @@ class DockerSandboxService(
             
             SandboxResponse(
                 output = output,
-                executionTimeMs = executionTime,
-                compilationTimeMs = 0  // Compilation happens during execution for Kotlin scripts
+                executionTimeMs = executionTime,  // Includes compilation time for Kotlin scripts
+                compilationTimeMs = 0  // No separate compilation phase for Kotlin scripts
             )
         } finally {
             // Clean up temporary files
