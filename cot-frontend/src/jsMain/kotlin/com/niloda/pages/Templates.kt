@@ -2,7 +2,7 @@ package com.niloda.pages
 
 import androidx.compose.runtime.*
 import com.niloda.api.ApiClient
-import com.niloda.api.CotSummary
+import com.niloda.api.model.CotSummary
 import com.niloda.components.LoadingSpinner
 import com.niloda.components.PageLayout
 import com.varabyte.kobweb.compose.foundation.layout.Column

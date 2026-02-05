@@ -1,5 +1,6 @@
 package com.niloda.api
 
+import com.niloda.api.model.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -7,52 +8,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.browser.window
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
-
-@Serializable
-data class CotSummary(
-    val id: String,
-    val name: String,
-    val createdAt: String,
-    val updatedAt: String
-)
-
-@Serializable
-data class CotListResponse(
-    val cots: List<CotSummary>
-)
-
-@Serializable
-data class CotDetailResponse(
-    val id: String,
-    val name: String,
-    val dslCode: String,
-    val createdAt: String,
-    val updatedAt: String
-)
-
-@Serializable
-data class CreateCotRequest(
-    val name: String,
-    val dslCode: String
-)
-
-@Serializable
-data class UpdateCotRequest(
-    val name: String,
-    val dslCode: String
-)
-
-@Serializable
-data class GenerateRequest(
-    val parameters: Map<String, JsonElement>
-)
-
-@Serializable
-data class GenerateResponse(
-    val output: String
-)
 
 object ApiClient {
     // Auto-detect backend URL based on environment

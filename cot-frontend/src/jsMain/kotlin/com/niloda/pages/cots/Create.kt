@@ -2,7 +2,7 @@ package com.niloda.pages.cots
 
 import androidx.compose.runtime.*
 import com.niloda.api.ApiClient
-import com.niloda.api.CreateCotRequest
+import com.niloda.api.model.CreateCotRequest
 import com.niloda.components.CotEditor
 import com.niloda.components.PageLayout
 import com.niloda.components.ToastManager
