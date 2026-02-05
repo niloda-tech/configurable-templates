@@ -45,10 +45,7 @@ class DockerSandboxService(
         val scriptPath = createScriptFile(request).bind()
         
         try {
-            // Validate the script (lightweight check)
-            compileScript(scriptPath, request.config).bind()
-            
-            // Execute the script (includes compilation)
+            // Execute the script (includes compilation for Kotlin scripts)
             val executionStart = System.currentTimeMillis()
             val output = executeScript(scriptPath, request.config).bind()
             val executionTime = System.currentTimeMillis() - executionStart
@@ -144,18 +141,9 @@ class DockerSandboxService(
     }
 
     /**
-     * Compiles the Kotlin script using Docker.
-     * Note: Kotlin scripts are compiled during execution, so we skip separate compilation.
-     * This avoids issues with compilation flags and ensures consistency with execution.
-     */
-    private fun compileScript(scriptPath: Path, config: ExecutionConfig): Either<SandboxError, Unit> = either {
-        logger.debug("Skipping separate compilation - Kotlin scripts compile during execution")
-        // Kotlin scripts are compiled when executed, so we don't need a separate compilation step
-        // Compilation errors will be caught during execution
-    }
-
-    /**
      * Executes the Kotlin script using Docker.
+     * Note: Kotlin scripts are compiled during execution, so compilation errors
+     * will appear as runtime errors in the stderr output.
      */
     private fun executeScript(scriptPath: Path, config: ExecutionConfig): Either<SandboxError, String> = either {
         logger.debug("Executing script: {}", scriptPath)

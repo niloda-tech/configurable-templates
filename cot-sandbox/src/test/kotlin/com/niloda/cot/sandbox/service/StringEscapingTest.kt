@@ -58,6 +58,7 @@ class StringEscapingTest {
         val value = """Path: "C:\temp\file.txt" ${'$'}HOME\nEnd"""
         val escaped = escapeStringValue(value)
         
+        // After escaping: quotes become \", backslashes become \\, dollar signs become \$, \n stays \n
         assertEquals("""Path: \"C:\\temp\\file.txt\" \${'$'}HOME\\nEnd""", escaped)
     }
 
