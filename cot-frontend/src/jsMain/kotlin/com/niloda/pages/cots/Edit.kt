@@ -2,8 +2,8 @@ package com.niloda.pages.cots
 
 import androidx.compose.runtime.*
 import com.niloda.api.ApiClient
-import com.niloda.api.CotDetailResponse
-import com.niloda.api.UpdateCotRequest
+import com.niloda.api.model.CotDetailResponse
+import com.niloda.api.model.UpdateCotRequest
 import com.niloda.components.CotEditor
 import com.niloda.components.LoadingSpinner
 import com.niloda.components.PageLayout
