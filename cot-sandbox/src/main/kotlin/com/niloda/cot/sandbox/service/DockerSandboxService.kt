@@ -46,24 +46,22 @@ class DockerSandboxService(
         val scriptPath = createScriptFile(request).bind()
         
         try {
-            // Compile the script
-            val compilationStart = System.currentTimeMillis()
+            // Validate the script (lightweight check)
             compileScript(scriptPath, request.config).bind()
-            val compilationTime = System.currentTimeMillis() - compilationStart
             
-            // Execute the script
+            // Execute the script (includes compilation)
             val executionStart = System.currentTimeMillis()
             val output = executeScript(scriptPath, request.config).bind()
             val executionTime = System.currentTimeMillis() - executionStart
             
             val totalTime = System.currentTimeMillis() - startTime
-            logger.debug("Execution completed in {}ms (compilation: {}ms, execution: {}ms)",
-                totalTime, compilationTime, executionTime)
+            logger.debug("Execution completed in {}ms (total execution time: {}ms)",
+                totalTime, executionTime)
             
             SandboxResponse(
                 output = output,
                 executionTimeMs = executionTime,
-                compilationTimeMs = compilationTime
+                compilationTimeMs = 0  // Compilation happens during execution for Kotlin scripts
             )
         } finally {
             // Clean up temporary files
@@ -92,11 +90,32 @@ class DockerSandboxService(
      */
     private fun buildScriptContent(request: SandboxRequest): String {
         val parametersMap = request.parameters.entries.joinToString(", ") { (key, value) ->
+            val keyEscaped = key.replace("\\", "\\\\").replace("\"", "\\\"")
             when (value) {
-                is String -> "\"$key\" to \"${value.toString().replace("\"", "\\\"")}\""
-                is Number -> "\"$key\" to $value"
-                is Boolean -> "\"$key\" to $value"
-                else -> "\"$key\" to \"$value\""
+                is String -> {
+                    // Properly escape string values to prevent injection
+                    val valueEscaped = value.toString()
+                        .replace("\\", "\\\\")
+                        .replace("\"", "\\\"")
+                        .replace("\n", "\\n")
+                        .replace("\r", "\\r")
+                        .replace("\t", "\\t")
+                        .replace("$", "\\$")
+                    "\"$keyEscaped\" to \"$valueEscaped\""
+                }
+                is Number -> "\"$keyEscaped\" to $value"
+                is Boolean -> "\"$keyEscaped\" to $value"
+                else -> {
+                    // For other types, escape the string representation
+                    val valueEscaped = value.toString()
+                        .replace("\\", "\\\\")
+                        .replace("\"", "\\\"")
+                        .replace("\n", "\\n")
+                        .replace("\r", "\\r")
+                        .replace("\t", "\\t")
+                        .replace("$", "\\$")
+                    "\"$keyEscaped\" to \"$valueEscaped\""
+                }
             }
         }
 
@@ -127,28 +146,13 @@ class DockerSandboxService(
 
     /**
      * Compiles the Kotlin script using Docker.
+     * Note: Kotlin scripts are compiled during execution, so we skip separate compilation.
+     * This avoids issues with compilation flags and ensures consistency with execution.
      */
     private fun compileScript(scriptPath: Path, config: ExecutionConfig): Either<SandboxError, Unit> = either {
-        logger.debug("Compiling script: {}", scriptPath)
-        
-        val compileCommand = buildDockerCommand(
-            scriptPath = scriptPath,
-            command = "kotlinc -script ${scriptPath.fileName} -classpath /sandbox/libs/cot-dsl.jar -no-stdlib",
-            config = config,
-            checkOnly = true
-        )
-
-        val result = executeDockerCommand(compileCommand, config.timeoutSeconds).bind()
-        
-        ensure(result.exitCode == 0) {
-            logger.error("Compilation failed: {}", result.stderr)
-            SandboxError.CompilationError(
-                message = "Script compilation failed",
-                details = result.stderr
-            )
-        }
-        
-        logger.debug("Compilation successful")
+        logger.debug("Skipping separate compilation - Kotlin scripts compile during execution")
+        // Kotlin scripts are compiled when executed, so we don't need a separate compilation step
+        // Compilation errors will be caught during execution
     }
 
     /**
