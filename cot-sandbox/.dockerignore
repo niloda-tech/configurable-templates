@@ -1,0 +1,26 @@
+# Build artifacts
+build/
+.gradle/
+.kotlin/
+
+# IDE files
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Temporary files
+*.log
+*.tmp
+.DS_Store
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+README.md
+*.md
+
+# Test files
+src/test/
