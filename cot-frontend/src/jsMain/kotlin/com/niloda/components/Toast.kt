@@ -26,6 +26,16 @@ data class ToastMessage(
 )
 
 /**
+ * Style configuration for a toast based on its type
+ */
+private data class ToastStyle(
+    val bgColor: String,
+    val borderColor: String,
+    val textColor: String,
+    val icon: String
+)
+
+/**
  * Global toast manager using composition local
  */
 object ToastManager {
@@ -67,6 +77,7 @@ object ToastManager {
 
 /**
  * Toast container - should be placed at the root of the app
+ * Stateful container that manages auto-dismiss timers
  */
 @Composable
 fun ToastContainer() {
@@ -88,6 +99,7 @@ fun ToastContainer() {
         ) {
             Column(modifier = Modifier.gap(0.75.em)) {
                 ToastManager.toasts.forEach { toast ->
+                    // Auto-dismiss timer (side effect)
                     LaunchedEffect(toast.id) {
                         scope.launch {
                             delay(toast.duration)
@@ -95,44 +107,41 @@ fun ToastContainer() {
                         }
                     }
                     
-                    Toast(toast) {
-                        ToastManager.removeToast(toast.id)
-                    }
+                    Toast(
+                        toast = toast,
+                        onDismiss = { ToastManager.removeToast(toast.id) }
+                    )
                 }
             }
         }
     }
 }
 
+/**
+ * Stateless toast composable - renders a single toast message
+ * Delegates to section composables for icon, message, and close button
+ */
 @Composable
 private fun Toast(toast: ToastMessage, onDismiss: () -> Unit) {
-    val (bgColor, borderColor, textColor, icon) = when (toast.type) {
-        ToastType.SUCCESS -> listOf(
-            "rgb(240, 253, 244)",
-            "rgb(34, 197, 94)",
-            "rgb(22, 101, 52)",
-            "✓"
-        )
-        ToastType.ERROR -> listOf(
-            "rgb(254, 242, 242)",
-            "rgb(239, 68, 68)",
-            "rgb(127, 29, 29)",
-            "✕"
-        )
-        ToastType.WARNING -> listOf(
-            "rgb(254, 252, 232)",
-            "rgb(234, 179, 8)",
-            "rgb(113, 63, 18)",
-            "⚠"
-        )
-        ToastType.INFO -> listOf(
-            "rgb(239, 246, 255)",
-            "rgb(59, 130, 246)",
-            "rgb(30, 58, 138)",
-            "ℹ"
-        )
-    }
+    val toastStyle = getToastStyle(toast.type)
     
+    ToastContent(
+        style = toastStyle,
+        message = toast.message,
+        onDismiss = onDismiss
+    )
+}
+
+/**
+ * Stateless content composable for a toast
+ * Renders the toast layout and delegates to section composables
+ */
+@Composable
+private fun ToastContent(
+    style: ToastStyle,
+    message: String,
+    onDismiss: () -> Unit
+) {
     Div(
         attrs = {
             style {
@@ -140,8 +149,8 @@ private fun Toast(toast: ToastMessage, onDismiss: () -> Unit) {
                 property("align-items", "flex-start")
                 property("gap", "0.75em")
                 property("padding", "1em")
-                property("background-color", bgColor)
-                property("border-left", "4px solid $borderColor")
+                property("background-color", style.bgColor)
+                property("border-left", "4px solid ${style.borderColor}")
                 property("border-radius", "0.375em")
                 property("box-shadow", "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)")
                 property("animation", "slideInRight 0.3s ease-out")
@@ -149,49 +158,79 @@ private fun Toast(toast: ToastMessage, onDismiss: () -> Unit) {
             }
         }
     ) {
-        // Icon
-        SpanText(
-            icon,
-            modifier = Modifier
-                .fontSize(1.25.em)
-                .color(parseRgbColor(borderColor))
-                .fontWeight(700)
+        ToastIcon(
+            icon = style.icon,
+            borderColor = style.borderColor
         )
         
-        // Message
-        SpanText(
-            toast.message,
-            modifier = Modifier
-                .flex(1)
-                .fontSize(0.95.em)
-                .color(parseRgbColor(textColor))
+        ToastMessageSection(
+            message = message,
+            textColor = style.textColor
         )
         
-        // Close button
-        Button(
-            attrs = {
-                onClick { onDismiss() }
-                style {
-                    property("background", "transparent")
-                    property("border", "none")
-                    property("cursor", "pointer")
-                    property("padding", "0")
-                    property("color", textColor)
-                    property("font-size", "1.2em")
-                    property("line-height", "1")
-                    property("opacity", "0.6")
-                    property("transition", "opacity 0.2s")
-                }
-                onMouseOver { event ->
-                    event.currentTarget.asDynamic().style.opacity = "1"
-                }
-                onMouseOut { event ->
-                    event.currentTarget.asDynamic().style.opacity = "0.6"
-                }
+        ToastCloseButton(
+            onDismiss = onDismiss,
+            textColor = style.textColor
+        )
+    }
+}
+
+/**
+ * Toast icon section - displays the type-specific icon
+ */
+@Composable
+private fun ToastIcon(icon: String, borderColor: String) {
+    SpanText(
+        icon,
+        modifier = Modifier
+            .fontSize(1.25.em)
+            .color(parseRgbColor(borderColor))
+            .fontWeight(700)
+    )
+}
+
+/**
+ * Toast message section - displays the message text
+ */
+@Composable
+private fun ToastMessageSection(message: String, textColor: String) {
+    SpanText(
+        message,
+        modifier = Modifier
+            .flex(1)
+            .fontSize(0.95.em)
+            .color(parseRgbColor(textColor))
+    )
+}
+
+/**
+ * Toast close button section - renders the dismiss button
+ */
+@Composable
+private fun ToastCloseButton(onDismiss: () -> Unit, textColor: String) {
+    Button(
+        attrs = {
+            onClick { onDismiss() }
+            style {
+                property("background", "transparent")
+                property("border", "none")
+                property("cursor", "pointer")
+                property("padding", "0")
+                property("color", textColor)
+                property("font-size", "1.2em")
+                property("line-height", "1")
+                property("opacity", "0.6")
+                property("transition", "opacity 0.2s")
             }
-        ) {
-            Text("×")
+            onMouseOver { event ->
+                event.currentTarget.asDynamic().style.opacity = "1"
+            }
+            onMouseOut { event ->
+                event.currentTarget.asDynamic().style.opacity = "0.6"
+            }
         }
+    ) {
+        Text("×")
     }
 }
 
@@ -221,4 +260,36 @@ fun injectToastStyles() {
 private fun parseRgbColor(rgbString: String): CSSColorValue {
     val values = rgbString.removePrefix("rgb(").removeSuffix(")").split(",").map { it.trim().toInt() }
     return rgb(values[0], values[1], values[2])
+}
+
+/**
+ * Get toast style configuration based on toast type
+ */
+private fun getToastStyle(type: ToastType): ToastStyle {
+    return when (type) {
+        ToastType.SUCCESS -> ToastStyle(
+            bgColor = "rgb(240, 253, 244)",
+            borderColor = "rgb(34, 197, 94)",
+            textColor = "rgb(22, 101, 52)",
+            icon = "✓"
+        )
+        ToastType.ERROR -> ToastStyle(
+            bgColor = "rgb(254, 242, 242)",
+            borderColor = "rgb(239, 68, 68)",
+            textColor = "rgb(127, 29, 29)",
+            icon = "✕"
+        )
+        ToastType.WARNING -> ToastStyle(
+            bgColor = "rgb(254, 252, 232)",
+            borderColor = "rgb(234, 179, 8)",
+            textColor = "rgb(113, 63, 18)",
+            icon = "⚠"
+        )
+        ToastType.INFO -> ToastStyle(
+            bgColor = "rgb(239, 246, 255)",
+            borderColor = "rgb(59, 130, 246)",
+            textColor = "rgb(30, 58, 138)",
+            icon = "ℹ"
+        )
+    }
 }
