@@ -1,7 +1,8 @@
-// Example Kotlin script that demonstrates COT template execution
-// This script can be executed in the sandbox environment
+@file:Repository("https://repo1.maven.org/maven2/")
+//@file:CompilerOptions("-Xcontext-parameters")
+@file:DependsOn("../cot-dsl/build/libs/cot-dsl-1.0-SNAPSHOT-all.jar")
 
-@file:DependsOn("cot-dsl-1.0-SNAPSHOT.jar")
+import kotlin.script.experimental.dependencies.DependsOn
 
 import com.niloda.cot.domain.dsl.cot
 import com.niloda.cot.domain.generate.generate
@@ -13,6 +14,7 @@ val cot = cot("Greeting") {
     "Hello, ".text
     Params.name ifTrueThen "World"
     "!".text
+
 }
 
 // Parameters for the template
@@ -23,7 +25,7 @@ val result = cot.generate(params, ::renderConfigurable)
 
 // Print the result
 result.fold(
-    ifLeft = { error -> 
+    ifLeft = { error ->
         System.err.println("Generation error: $error")
         kotlin.system.exitProcess(1)
     },

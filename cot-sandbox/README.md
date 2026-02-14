@@ -99,7 +99,7 @@ import com.niloda.cot.sandbox.domain.*
 import java.nio.file.Paths
 
 // Initialize the service
-val cotDslJar = Paths.get("cot-dsl/build/libs/cot-dsl-1.0-SNAPSHOT.jar")
+val cotDslJar = Paths.get("cot-dsl/build/libs/cot-dsl-1.0-SNAPSHOT-all.jar")
 val sandboxService = DockerSandboxService(cotDslJarPath = cotDslJar)
 
 // Create a request

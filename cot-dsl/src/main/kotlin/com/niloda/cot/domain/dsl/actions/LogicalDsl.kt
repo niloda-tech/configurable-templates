@@ -1,16 +1,18 @@
 package com.niloda.cot.domain.dsl.actions
 
 import arrow.core.raise.Raise
-import com.niloda.cot.Param
-import com.niloda.cot.Params
+import com.niloda.cot.domain.dsl.Param
 import com.niloda.cot.domain.dsl.CotDsl
 import com.niloda.cot.domain.dsl.builders.HasCotBuilder
 import com.niloda.cot.domain.template.Configurable.IfPresent
 import com.niloda.cot.domain.template.DomainError
 import com.niloda.cot.domain.template.Section
 
-fun <T:Param<T>> substituteToken(param: T): String = "{{${param.parameterName()}}}"
-
+/**
+ * Provides DSL functions for creating conditional and optional sections in configurable templates.
+ * This interface extends [HasCotBuilder] to access the builder for configuring sections based on parameter presence or truth values.
+ * Functions allow chaining parameters and generating sections with wrapped parameter placeholders.
+ */
 @CotDsl
 interface LogicalDsl : HasCotBuilder {
 
@@ -22,8 +24,6 @@ interface LogicalDsl : HasCotBuilder {
             parameterName = parameterName(),
             section = Section( paramMapping(this))
         )
-
-
 
     data class WrapParam<T>( val param: Param<T>) where T: Param<T>, T: Enum<T> {
         override fun toString(): String = "%$param%"

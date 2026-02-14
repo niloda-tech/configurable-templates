@@ -16,8 +16,10 @@ repositories {
 val arrowVersion = "2.2.0"
 
 dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-main-kts:2.2.21")
     implementation(kotlin("stdlib"))
-    
+    implementation("org.jetbrains.kotlin:kotlin-main-kts:2.2.21")
+
     // cot-dsl module dependency
     implementation(project(":cot-dsl"))
 

@@ -2,14 +2,11 @@ package com.niloda.cot.domain.dsl.builders
 
 import arrow.core.raise.Raise
 import arrow.core.raise.context.ensure
-import com.niloda.cot.Param
+import com.niloda.cot.domain.dsl.Param
 import com.niloda.cot.domain.dsl.CotDsl
-import com.niloda.cot.domain.dsl.builders.SectionBuilder
 import com.niloda.cot.domain.template.Configurable
 import com.niloda.cot.domain.template.DomainError
 import com.niloda.cot.domain.template.Section
-import java.util.regex.Matcher
-import kotlin.reflect.KClass
 
 
 private val regex = Regex("\\{\\{(.*?)}}")
