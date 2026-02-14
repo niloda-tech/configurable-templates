@@ -9,6 +9,7 @@ This library provides a Domain Specific Language (DSL) for creating Configurable
 - **COT DSL**: A Kotlin-based DSL for defining configurable templates
 - **REST API**: Ktor-based backend for managing templates
 - **Web Editor**: Kobweb-based frontend for creating and editing templates
+- **COT Sandbox**: Secure Docker-based environment for executing templates
 
 ## Project Structure
 
@@ -19,8 +20,11 @@ configurable-templates/
 ├── cot-simple-endpoints/       # REST API backend
 │   ├── src/main/kotlin/        # Ktor server and API routes
 │   └── src/test/kotlin/        # Comprehensive test suite
-└── cot-frontend/               # Web-based editor
-    └── src/jsMain/kotlin/      # Kobweb UI components
+├── cot-frontend/               # Web-based editor
+│   └── src/jsMain/kotlin/      # Kobweb UI components
+└── cot-sandbox/                # Docker-based execution sandbox
+    ├── Dockerfile              # Container for Kotlin script execution
+    └── src/main/kotlin/        # Sandbox service implementation
 ```
 
 ## Features
@@ -42,6 +46,13 @@ configurable-templates/
 - **Live editing**: Create and edit templates with immediate feedback
 - **Parameter input**: Dynamic forms based on template schema
 - **Output generation**: Generate and preview template output
+
+### Sandbox (`cot-sandbox`)
+- **Secure execution**: Docker-isolated environment for running templates
+- **Resource limits**: Configurable CPU, memory, and timeout constraints
+- **Compilation validation**: Validates Kotlin syntax before execution
+- **Type-safe errors**: Comprehensive error handling with Arrow-kt
+- **Automatic cleanup**: Temporary resources are cleaned up after execution
 
 ## Getting Started
 
@@ -143,6 +154,7 @@ curl -X POST http://localhost:8080/api/cots/{id}/generate \
 - **[COT DSL Documentation](cot-dsl/README.md)** - Core DSL reference
 - **[API Documentation](cot-simple-endpoints/API_DOCUMENTATION.md)** - REST API reference
 - **[Frontend Documentation](cot-frontend/README.md)** - Web editor guide
+- **[Sandbox Documentation](cot-sandbox/README.md)** - Docker sandbox guide
 - **[Implementation Plan](cot-simple-endpoints/IMPLEMENTATION_PLAN.md)** - Development roadmap
 - **[Architecture](ARCHITECTURE.md)** - System architecture overview
 

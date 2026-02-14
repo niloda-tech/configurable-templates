@@ -1,7 +1,7 @@
 package com.niloda.cot.domain.dsl
 
 import arrow.core.Either
-import com.niloda.cot.Params
+import com.niloda.cot.sample.SampleParams
 import com.niloda.cot.domain.Cot
 import com.niloda.cot.domain.generate.RenderParams
 import com.niloda.cot.domain.generate.generate
@@ -62,7 +62,7 @@ class CotDslTest {
         val result = cot("T") {
             "Template".text
             "Line 2".text
-            Params.x ifTrueThen "X was true"
+            SampleParams.x ifTrueThen "X was true"
         }
 
         assertTrue(result.isRight())
@@ -87,7 +87,7 @@ class CotDslTest {
         val result = cot("T") {
             // `%` should convert the enum Param to
             // a Dynamic part using its name
-            Params.x ifTrueThen Params.NAME
+            SampleParams.x ifTrueThen SampleParams.NAME
         }
 
         generate(
