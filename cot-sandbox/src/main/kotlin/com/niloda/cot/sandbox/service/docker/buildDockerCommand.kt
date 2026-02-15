@@ -1,7 +1,6 @@
-package com.niloda.cot.sandbox.service
+package com.niloda.cot.sandbox.service.docker
 
 import com.niloda.cot.sandbox.domain.ExecutionConfig
-import com.niloda.cot.sandbox.service.DockerSandboxService.dockerMountPath
 import java.nio.file.Path
 
 /**
@@ -12,12 +11,17 @@ import java.nio.file.Path
 fun buildDockerCommand(
     scriptPath: Path,
     dockerImage: String,
-    command: String,
     config: ExecutionConfig,
-    cotDslJarPath: Path
+    jarFile: Path
 ): List<String> {
+    val command = "cd /sandbox/scripts && " +
+            "kotlinc " +
+            "-Xcontext-parameters " +
+            "-script ./${scriptPath.fileName} " +
+            "-classpath /sandbox/libs/${jarFile.fileName}"
+
     val scriptsDir = scriptPath.parent.dockerMountPath()
-    val libsDir = cotDslJarPath.parent.dockerMountPath()
+    val libsDir = jarFile.parent.dockerMountPath()
     return listOf(
         "docker", "run",
         "--rm",

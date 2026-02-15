@@ -1,4 +1,4 @@
-package com.niloda.cot.sandbox.service.docker
+package com.niloda.cot.sandbox.service.sandbox
 
 import arrow.core.Either
 import arrow.core.raise.either

@@ -43,6 +43,8 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    // Ensure cot-dsl fat JAR exists when running integration tests (e.g. *DockerSandboxIntegration*)
+    dependsOn(":cot-dsl:shadowJar")
 }
 
 java {

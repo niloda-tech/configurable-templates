@@ -224,6 +224,24 @@ sandboxService.execute(request).fold(
 open cot-sandbox/build/reports/jacoco/test/html/index.html
 ```
 
+### Integration tests (Docker)
+
+Integration tests run real template code inside the `cot-sandbox:latest` Docker image. They are tagged with `@Tag("integration")` and are **skipped** automatically if Docker is not available or the image/JAR are missing.
+
+**Prerequisites:**
+
+1. Docker installed and running
+2. Build the sandbox image: `docker build -t cot-sandbox:latest .` (from the `cot-sandbox` directory)
+3. Build the cot-dsl fat JAR: `./gradlew :cot-dsl:shadowJar` (from project root)
+
+**Run integration tests:**
+
+```bash
+./gradlew :cot-sandbox:test --tests "*DockerSandboxIntegration*"
+```
+
+When prerequisites are met, the tests execute COT templates in the container (static text, dynamic params, conditional, repetition, oneOf, error cases). When Docker or the image is missing, the tests are skipped with a clear message.
+
 ## Integration with Backend
 
 To use the sandbox in the backend API:

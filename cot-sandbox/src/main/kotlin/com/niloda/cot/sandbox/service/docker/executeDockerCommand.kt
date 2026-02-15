@@ -1,9 +1,10 @@
-package com.niloda.cot.sandbox.service
+package com.niloda.cot.sandbox.service.docker
 
 import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.raise.ensure
 import com.niloda.cot.sandbox.domain.SandboxError
+import com.niloda.cot.sandbox.service.sandbox.CommandResult
 import org.slf4j.Logger
 import java.util.concurrent.TimeUnit
 

@@ -1,4 +1,4 @@
-package com.niloda.cot.sandbox.service.docker
+package com.niloda.cot.sandbox.service.sandbox
 
 val Any.escaped get (): String =
     toString()

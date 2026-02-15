@@ -2,18 +2,20 @@
 # This Dockerfile creates a lightweight environment for safely executing
 # single-file Kotlin scripts with the COT DSL as a dependency.
 
-FROM eclipse-temurin:17-jdk-alpine
+FROM --platform=linux/arm64/v8 eclipse-temurin:17-jdk
 
 # Install Kotlin compiler
 ENV KOTLIN_VERSION=2.2.21
 ENV KOTLIN_HOME=/opt/kotlin
 
-RUN apk add --no-cache curl unzip && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl unzip && \
     curl -L "https://github.com/JetBrains/kotlin/releases/download/v${KOTLIN_VERSION}/kotlin-compiler-${KOTLIN_VERSION}.zip" -o kotlin-compiler.zip && \
     unzip kotlin-compiler.zip -d /opt && \
     rm kotlin-compiler.zip && \
     mv /opt/kotlinc ${KOTLIN_HOME} && \
-    apk del curl unzip
+    apt-get remove -y curl unzip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV PATH="${KOTLIN_HOME}/bin:${PATH}"
 
