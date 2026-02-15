@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Mock nohup: run remaining args in background and exit 0
+shift
+"$@" &
+exit 0

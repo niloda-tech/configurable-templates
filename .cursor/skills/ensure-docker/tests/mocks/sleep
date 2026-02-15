@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Mock sleep: no-op so tests run fast
+exit 0

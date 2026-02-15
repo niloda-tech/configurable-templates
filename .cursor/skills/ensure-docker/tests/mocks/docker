@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Mock docker: exit code from env or from counter (success after N calls).
+# MOCK_DOCKER_DEFAULT=0|1 - exit when DOCKER_HOST unset
+# MOCK_DOCKER_WITH_HOST=0|1 - exit when DOCKER_HOST set
+# Or use MOCK_DOCKER_COUNTER_FILE and MOCK_DOCKER_SUCCESS_AFTER for "succeed after N calls"
+if [ -n "$MOCK_DOCKER_COUNTER_FILE" ] && [ -n "$MOCK_DOCKER_SUCCESS_AFTER" ]; then
+  dir=$(dirname "$MOCK_DOCKER_COUNTER_FILE")
+  mkdir -p "$dir"
+  n=0
+  [ -f "$MOCK_DOCKER_COUNTER_FILE" ] && n=$(cat "$MOCK_DOCKER_COUNTER_FILE")
+  n=$((n + 1))
+  echo $n > "$MOCK_DOCKER_COUNTER_FILE"
+  if [ "$n" -ge "$MOCK_DOCKER_SUCCESS_AFTER" ]; then
+    exit 0
+  fi
+  exit 1
+fi
+if [ -n "$DOCKER_HOST" ]; then
+  exit "${MOCK_DOCKER_WITH_HOST:-1}"
+fi
+exit "${MOCK_DOCKER_DEFAULT:-1}"

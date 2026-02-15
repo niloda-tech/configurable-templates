@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Mock colima: always success (script only checks "command -v colima" and runs "colima start")
+exit 0
